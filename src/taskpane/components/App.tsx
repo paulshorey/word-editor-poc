@@ -58,19 +58,6 @@ export default class App extends React.Component<AppProps, AppState> {
     });
   };
 
-  clickDocument = async () => {
-    Word.run(function (context) {
-      var selection = context.document.getSelection();
-      selection.load("text");
-
-      return context.sync().then(function () {
-        console.log("The selected text is: " + selection.text);
-      });
-    }).catch(function (error) {
-      console.log("Error: " + JSON.stringify(error));
-    });
-  };
-
   render() {
     const { title, isOfficeInitialized } = this.props;
 
@@ -86,8 +73,6 @@ export default class App extends React.Component<AppProps, AppState> {
 
     return (
       <div className="ms-welcome">
-        <Header logo={require("./../../../assets/logo-filled.png")} title={this.props.title} message="Welcome" />
-        <p id="message"></p>
         <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={this.click}>
           Run
         </DefaultButton>
