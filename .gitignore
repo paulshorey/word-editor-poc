@@ -1,0 +1,39 @@
+/node_modules
+
+# OS
+.DS_Store
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+**/.vs
+.vscode
+
+# IDE - VSCode
+# this takes no action if we exclude whole folder like: .vscode/, according to https://git-scm.com/docs/gitignore:
+# It is not possible to re-include a file if a parent directory of that file is excluded.
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.aws-sam
+.csproj.user
+
+# Private files
+.env
+docker-compose.override.yml
+env.json
+/admin-workspace/frontend/.npmrc
+
+# Misc
+.idea/
+
+**/bin
+**/obj
+**/Debug

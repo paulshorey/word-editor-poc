@@ -1,0 +1,7 @@
+{
+  "plugins": ["office-addins"],
+  "extends": ["plugin:office-addins/react"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn"
+  }
+}
