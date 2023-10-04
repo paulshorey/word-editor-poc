@@ -4,6 +4,7 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { log, logKeys } from "../lib/log";
 
 /* global document, Word, Office, module, require */
 
@@ -35,26 +36,21 @@ Office.onReady(() => {
 });
 
 function myHandler() {
-  Word.run(function (context) {
+  Word.run(async function (context) {
     // Get the current selection as a range.
     var range = context.document.getSelection();
-<<<<<<< HEAD
-=======
+    // range.load("paragraphs/items/text");
+    await context.sync();
+    range.paragraphs.load("text");
+    await range.paragraphs.context.sync();
     // Get all words in the range.
-    // var words = range[0].getFirst();
-    console.log("range", range);
-    // context.load(words, 'items');
-    // return context.sync().then(function() {
-    //   // Check if there are words in the range.
-    //   if (words.items.length > 0) {
-    //     // Select the first word in the range.
-    //     words.items[0].select('Whole');
-    //   }
-    // });
+    log(
+      "range.paragraphs",
+      range.paragraphs.items.map((p) => p.text)
+    );
     return context.sync();
->>>>>>> 18383bb (work in progress, experimenting, logging)
   }).catch(function (error) {
-    console.log("Error: ", error);
+    log("Error", error);
   });
 }
 
