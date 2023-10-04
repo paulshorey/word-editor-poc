@@ -50,17 +50,13 @@ export default class App extends React.Component<AppProps, AppState> {
     return Word.run(async (context) => {
       const contentRange = context.document.getSelection();
       const contentControl = contentRange.insertContentControl();
-      contentControl.title = "title";
-      contentControl.tag = "CC_TAG";
-      contentControl.appearance = "Tags";
+      contentControl.title = "";
+      // contentControl.tag = "CC_TAG";
       contentControl.color = "Red";
       contentControl.cannotDelete = false;
       contentControl.cannotEdit = true;
-      contentControl.appearance = "BoundingBox";
-
-      await context.sync();
-
-      contentControl.insertText("Hello World", "Replace");
+      contentControl.appearance = "Tags";
+      contentControl.insertParagraph("DATA_ELEMENT", "Before");
 
       await context.sync();
     });
