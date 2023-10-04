@@ -7,13 +7,12 @@ export function logClear() {
 }
 
 export function log(...args) {
+  console.log(...args);
   let message = "";
   try {
     message = args.map((arg) => `<pre><code>${JSON.stringify(arg, null, "  ")}</code></pre>`).join("");
-    console.log(message);
   } catch (e) {
-    message = e.toString();
-    console.error(message);
+    console.error(e);
   }
   try {
     document.getElementById("message").innerHTML = message + document.getElementById("message").innerHTML;
