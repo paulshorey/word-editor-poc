@@ -59,7 +59,7 @@ function myHandler() {
           // Do something with the paragraph text...
           var boldText = "<b>" + paragraphText + "</b>";
           // Replace the paragraph text with the bold version
-          paragraphs.items[i].insertHtml(boldText, "Replace");
+          // paragraphs.items[i].insertHtml(boldText, "Replace");  // Paul - This causes an infinit loop on WEB - works on Desktop!
         }
         return context.sync();
       });

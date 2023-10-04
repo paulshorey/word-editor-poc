@@ -4,6 +4,7 @@ import { DefaultButton } from "@fluentui/react";
 import { HeroListItem } from "./HeroList";
 import Progress from "./Progress";
 import AddComponent from "../commands/AddComponent";
+import GetFirstParagraph from "../commands/GetFirstParagraph";
 
 /* global Word, require */
 
@@ -78,6 +79,7 @@ export default class App extends React.Component<AppProps, AppState> {
           Run
         </DefaultButton>
         <AddComponent />
+        <GetFirstParagraph />
       </div>
     );
   }
