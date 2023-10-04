@@ -1,0 +1,21 @@
+
+function myHandler() {
+  Word.run(function (context) {
+    // Get the current selection as a range.
+    var range = context.document.getSelection();
+    // Get all words in the range.
+    // var words = range[0].getFirst();
+    console.log("range", range);
+    // context.load(words, 'items');
+    // return context.sync().then(function() {
+    //   // Check if there are words in the range.
+    //   if (words.items.length > 0) {
+    //     // Select the first word in the range.
+    //     words.items[0].select('Whole');
+    //   }
+    // });
+    return context.sync();
+  }).catch(function (error) {
+    console.log("Error: ", error);
+  });
+}

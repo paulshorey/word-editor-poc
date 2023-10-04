@@ -7,12 +7,6 @@ import * as ReactDOM from "react-dom";
 
 /* global document, Word, Office, module, require */
 
-function log(...args) {
-  document.getElementById("message").innerHTML = `
-    ${args.map((arg) => `<pre><code>${JSON.stringify(arg, null, "  ")}</code></pre>`).join("")}
-  `;
-}
-
 initializeIcons();
 
 let isOfficeInitialized = false;
@@ -41,12 +35,28 @@ Office.onReady(() => {
 });
 
 function myHandler() {
-  Word.run(function(context) {
+  Word.run(function (context) {
     // Get the current selection as a range.
     var range = context.document.getSelection();
+<<<<<<< HEAD
+=======
+    // Get all words in the range.
+    // var words = range[0].getFirst();
+    console.log("range", range);
+    // context.load(words, 'items');
+    // return context.sync().then(function() {
+    //   // Check if there are words in the range.
+    //   if (words.items.length > 0) {
+    //     // Select the first word in the range.
+    //     words.items[0].select('Whole');
+    //   }
+    // });
+    return context.sync();
+>>>>>>> 18383bb (work in progress, experimenting, logging)
   }).catch(function (error) {
-    log("Error: ", error);
+    console.log("Error: ", error);
   });
+}
 
 if ((module as any).hot) {
   (module as any).hot.accept("./components/App", () => {
