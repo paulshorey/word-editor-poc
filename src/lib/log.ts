@@ -1,3 +1,11 @@
+export function logClear() {
+  try {
+    document.getElementById("message").innerHTML = "";
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function log(...args) {
   let message = "";
   try {
@@ -8,7 +16,7 @@ export function log(...args) {
     console.error(message);
   }
   try {
-    document.getElementById("message").innerHTML = message;
+    document.getElementById("message").innerHTML = message + document.getElementById("message").innerHTML;
   } catch (e) {
     console.error(e);
   }

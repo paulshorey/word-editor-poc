@@ -4,7 +4,7 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { log, logKeys } from "../lib/log";
+import { log, logKeys, logClear } from "../lib/log";
 
 /* global document, Word, Office, module, require */
 
@@ -37,17 +37,35 @@ Office.onReady(() => {
 
 function myHandler() {
   Word.run(async function (context) {
+    logClear();
     // Get the current selection as a range.
-    var range = context.document.getSelection();
-    // range.load("paragraphs/items/text");
+    var selectionRange = context.document.getSelection();
+
+    // State
+    var clicked = {
+      paragraphs: [],
+      words: "",
+      variables: [],
+    };
+
+    // log all paragraphs that the selection touches
+    selectionRange.paragraphs.load("text");
+    await selectionRange.paragraphs.context.sync();
+    clicked.paragraphs = selectionRange.paragraphs.items.map((p) => p.text);
+
+    // log word under cursor
+    var words = selectionRange.getTextRanges([" ", "\t", "\r", "\n"], true); // just get everything including punctuation until nearest whitespace
+    words.load("items/text");
     await context.sync();
-    range.paragraphs.load("text");
-    await range.paragraphs.context.sync();
-    // Get all words in the range.
-    log(
-      "range.paragraphs",
-      range.paragraphs.items.map((p) => p.text)
-    );
+    clicked.words = words.items.map((p) => p.text).join(" ");
+
+    // parse variables
+    clicked.variables = clicked.words.match(/({.+})/g);
+
+    // save to application state
+    log("clicked", clicked);
+
+    // done
     return context.sync();
   }).catch(function (error) {
     log("Error", error);

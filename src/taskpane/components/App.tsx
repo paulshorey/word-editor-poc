@@ -46,21 +46,21 @@ export default class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  click = async () => {
+  addDataElement = async () => {
     return Word.run(async (context) => {
-      /**
-       * Insert your Word code here
-       */
+      const contentRange = context.document.getSelection();
+      const contentControl = contentRange.insertContentControl();
+      contentControl.title = "title";
+      contentControl.tag = "CC_TAG";
+      contentControl.appearance = "Tags";
+      contentControl.color = "Red";
+      contentControl.cannotDelete = false;
+      contentControl.cannotEdit = true;
+      contentControl.appearance = "BoundingBox";
 
-      // eslint-disable-next-line no-debugger
-      // debugger;
-      // insert a paragraph at the end of the document.
-      const doc = context.document;
-      const originalRange = doc.getSelection();
-      const paragraph = originalRange.insertText("Hello World", Word.InsertLocation.end);
+      await context.sync();
 
-      // change the paragraph color to blue.
-      paragraph.font.color = "red";
+      contentControl.insertText("Hello World", "Replace");
 
       await context.sync();
     });
@@ -82,12 +82,20 @@ export default class App extends React.Component<AppProps, AppState> {
 
     return (
       <div className="ms-welcome">
-        <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={this.click}>
-          Run
+        <DefaultButton
+          className="ms-welcome__action"
+          iconProps={{ iconName: "ChevronRight" }}
+          onClick={this.addDataElement}
+        >
+          Add Data Element
         </DefaultButton>
+        <br />
         <AddComponent />
+        <br />
         <GetFirstParagraph />
+        <br />
         <AddContentControl tagName={tagName} />
+        <br />
         <ToggleCCDeletable tagName={tagName} />
       </div>
     );
