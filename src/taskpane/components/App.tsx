@@ -5,6 +5,7 @@ import { HeroListItem } from "./HeroList";
 import Progress from "./Progress";
 import AddComponent from "../commands/AddComponent";
 import GetFirstParagraph from "../commands/GetFirstParagraph";
+import AddContentControl from "../commands/AddContentControl";
 
 /* global Word, require */
 
@@ -80,6 +81,7 @@ export default class App extends React.Component<AppProps, AppState> {
         </DefaultButton>
         <AddComponent />
         <GetFirstParagraph />
+        <AddContentControl />
       </div>
     );
   }
