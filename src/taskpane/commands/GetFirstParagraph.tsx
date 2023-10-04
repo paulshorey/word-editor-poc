@@ -1,5 +1,6 @@
 import React from "react";
 import { DefaultButton } from "@fluentui/react";
+import { contextLoad } from "./commandUtils";
 
 /* global Word, require */
 
@@ -18,14 +19,14 @@ const handleClick = () => {
     const originalRange = doc.getSelection();
 
     originalRange.load("text");
-    context.load(firstParagraph);   // HAS ESLINT issue TypeError: Cannot read
-
+    contextLoad(context, firstParagraph);
     await context.sync();
 
-    doc.body.insertParagraph(">>> " + firstParagraph.text, Word.InsertLocation.end);
+    // eslint-disable-next-line office-addins/load-object-before-read
+    doc.body.insertParagraph(" " + firstParagraph.text, Word.InsertLocation.end);
     await context.sync();
   });
-}
+};
 
 const GetFirstParagraph = () => {
   return (

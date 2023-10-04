@@ -3,26 +3,31 @@ import { DefaultButton } from "@fluentui/react";
 
 /* global Word, require */
 
-const handleClick = () => {
+const handleClick = (tagName: string) => {
   return Word.run(async (context) => {
     const contentRange = context.document.getSelection();
     const contentControl = contentRange.insertContentControl();
     contentControl.title = "Content Control Title ***";
-    contentControl.tag = "CC_TAG";
+    contentControl.tag = tagName;
     contentControl.appearance = "Tags";
-    contentControl.color = "Red";
+    contentControl.color = "green";
     contentControl.cannotDelete = false;
-
-    // contentControl.cannotEdit = true;
-    // contentControl.appearance = "BoundingBox";
+    contentControl.cannotEdit = false;
 
     return context.sync();
   });
 };
 
-const AddContentControl = () => {
+interface AddContentControlInterface {
+  tagName: string;
+}
+const AddContentControl = ({ tagName }: AddContentControlInterface) => {
   return (
-    <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
+    <DefaultButton
+      className="ms-welcome__action"
+      iconProps={{ iconName: "ChevronRight" }}
+      onClick={() => handleClick(tagName)}
+    >
       Add Content Control
     </DefaultButton>
   );

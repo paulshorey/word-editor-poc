@@ -78,3 +78,13 @@
 b {
     font-weight: bold;
 }
+
+/*======================= FAF ================*/
+
+.faf-isDeletable {
+    background-color: lightgreen;
+}
+
+.faf-isNotDeletable {
+    background-color: red;
+}
