@@ -52,10 +52,12 @@ export default class App extends React.Component<AppProps, AppState> {
        */
 
       // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertParagraph("Hello World", Word.InsertLocation.end);
+      const doc = context.document;
+      const originalRange = doc.getSelection();
+      const paragraph = originalRange.insertText("Hello World", Word.InsertLocation.end);
 
       // change the paragraph color to blue.
-      paragraph.font.color = "blue";
+      paragraph.font.color = "red";
 
       await context.sync();
     });
