@@ -1,12 +1,12 @@
 import * as React from "react";
 import { HeroListItem } from "./HeroList";
 import Progress from "./Progress";
-import AddComponent from "../taskpane/commands/AddComponent";
-import GetFirstParagraph from "../taskpane/commands/GetFirstParagraph";
-import AddContentControl from "../taskpane/commands/AddContentControl";
-import ToggleCCDeletable from "../taskpane/commands/ToggleCCDeletable";
+import AddComponent from "@src/components/commands/AddComponent";
+import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
+import AddContentControl from "@src/components/commands/AddContentControl";
+import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
 import AddDataElement from "./controls/AddDataElement";
-import PrepareCC4Save from "../taskpane/commands/PrepareCC4Save";
+import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 
 /* global Word, require */
 

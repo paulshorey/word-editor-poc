@@ -1,6 +1,6 @@
 import React from "react";
 import { DefaultButton } from "@fluentui/react";
-import { contextLoad } from "../../lib/commandUtils";
+import { contextLoad } from "@src/lib/commandUtils";
 
 /* global Word, require */
 
