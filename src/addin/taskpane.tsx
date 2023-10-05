@@ -4,7 +4,7 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { log, logKeys, logClear } from "@src/lib/log";
+import { logClear } from "@src/lib/log";
 
 /* global document, Word, Office, module, require */
 
@@ -63,11 +63,13 @@ function myHandler() {
     clicked.variables = clicked.words.match(/({.+})/g);
 
     // save to application state
+    // eslint-disable-next-line no-undef
     console.log("clicked", clicked);
 
     // done
     return context.sync();
   }).catch(function (error) {
+    // eslint-disable-next-line no-undef
     console.error("Error", error);
   });
 }
