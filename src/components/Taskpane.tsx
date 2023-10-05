@@ -6,7 +6,7 @@ import GetFirstParagraph from "../taskpane/commands/GetFirstParagraph";
 import AddContentControl from "../taskpane/commands/AddContentControl";
 import ToggleCCDeletable from "../taskpane/commands/ToggleCCDeletable";
 import AddDataElement from "./controls/AddDataElement";
-import ViewDataElements from "./log/ViewDataElements";
+import PrepareCC4Save from "../taskpane/commands/PrepareCC4Save";
 
 /* global Word, require */
 
@@ -72,7 +72,7 @@ export default class App extends React.Component<AppProps, AppState> {
         <br />
         <ToggleCCDeletable tagName={tagName} />
         <br />
-        <ViewDataElements />
+        <PrepareCC4Save />
       </div>
     );
   }
