@@ -21,7 +21,7 @@ const handleClick = () => {
 
 const AddComponent = () => {
   return (
-    <DefaultButton className="faf-button" iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
+    <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
       Add Component
     </DefaultButton>
   );

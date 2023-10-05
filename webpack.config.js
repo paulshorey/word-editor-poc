@@ -4,6 +4,7 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
+const path = require("path");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
@@ -20,13 +21,16 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       vendor: ["react", "react-dom", "core-js", "@fluentui/react"],
-      taskpane: ["react-hot-loader/patch", "./src/taskpane/index.tsx", "./src/taskpane/taskpane.html"],
-      commands: "./src/commands/commands.ts",
+      taskpane: ["react-hot-loader/patch", "./src/addin/taskpane.tsx", "./public/taskpane.html"],
+      commands: "./src/addin/commands.ts",
     },
     output: {
       clean: true,
     },
     resolve: {
+      alias: {
+        "@src": path.resolve(__dirname, "src/"),
+      },
       extensions: [".ts", ".tsx", ".html", ".js"],
     },
     module: {
@@ -55,7 +59,7 @@ module.exports = async (env, options) => {
           test: /\.(png|jpg|jpeg|gif|ico)$/,
           type: "asset/resource",
           generator: {
-            filename: "assets/[name][ext][query]",
+            filename: "public/assets/[name][ext][query]",
           },
         },
       ],
@@ -63,10 +67,6 @@ module.exports = async (env, options) => {
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
-          {
-            from: "assets/*",
-            to: "assets/[name][ext][query]",
-          },
           {
             from: "manifest*.xml",
             to: "[name]" + "[ext]",
@@ -82,12 +82,12 @@ module.exports = async (env, options) => {
       }),
       new HtmlWebpackPlugin({
         filename: "taskpane.html",
-        template: "./src/taskpane/taskpane.html",
+        template: "./public/taskpane.html",
         chunks: ["taskpane", "vendor", "polyfills"],
       }),
       new HtmlWebpackPlugin({
         filename: "commands.html",
-        template: "./src/commands/commands.html",
+        template: "./public/commands.html",
         chunks: ["commands"],
       }),
       new webpack.ProvidePlugin({

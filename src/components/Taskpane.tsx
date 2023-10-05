@@ -1,10 +1,10 @@
 import * as React from "react";
 import { HeroListItem } from "./HeroList";
 import Progress from "./Progress";
-import AddComponent from "../commands/AddComponent";
-import GetFirstParagraph from "../commands/GetFirstParagraph";
-import AddContentControl from "../commands/AddContentControl";
-import ToggleCCDeletable from "../commands/ToggleCCDeletable";
+import AddComponent from "../taskpane/commands/AddComponent";
+import GetFirstParagraph from "../taskpane/commands/GetFirstParagraph";
+import AddContentControl from "../taskpane/commands/AddContentControl";
+import ToggleCCDeletable from "../taskpane/commands/ToggleCCDeletable";
 import AddDataElement from "./controls/AddDataElement";
 
 /* global Word, require */
@@ -53,7 +53,7 @@ export default class App extends React.Component<AppProps, AppState> {
       return (
         <Progress
           title={title}
-          logo={require("./../../../assets/logo-filled.png")}
+          logo={require("../../public/assets/logo-filled.png")}
           message="Please sideload your addin to see app body."
         />
       );
