@@ -6,32 +6,20 @@ import { contextLoad } from "@src/lib/commandUtils";
 
 const handleClick = () => {
   return Word.run(async (context) => {
-    const controls = context.document.contentControls;
-    contextLoad(context, controls);
-    context
-      .sync()
-      .then(() => {
-        controls.items.forEach((control) => {
-          context.load(control);
-          context.sync();
-          control.color = "purple";
-        });
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-undef
-        console.log("===>", e);
-      });
-
+    const control = context.document.contentControls.getFirst();
+    contextLoad(context, control);
+    control.color = "purple";
+    control.clear();
     return context.sync();
   });
 };
 
-const PrepareCC4Save = () => {
+const ReplaceCC4Save = () => {
   return (
     <DefaultButton className={"ms-welcome__action"} iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
-      Toggle CC Deletable
+      Clear CCs
     </DefaultButton>
   );
 };
 
-export default PrepareCC4Save;
+export default ReplaceCC4Save;

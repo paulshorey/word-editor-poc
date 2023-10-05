@@ -3,7 +3,7 @@ with a few additional item.
 Each item haas a number in parentheses, that is Karsten's priorities.
 When an item has been completed, update the list adding the line with `\*\*`
 
-When you opick an item to work on - please replace the '-' at the first line with your first letter of first name
+When you pick an item to work on - please replace the '-' at the first line with your first letter of first name
 
 [X] (9) Show/Hide side column “taskpane” (what Microsoft calls it)
 
@@ -56,3 +56,8 @@ what we currently use. They are simplified for the POC. - “active” - display
   can be updated accordingly.
   We could also create variables and component as content controls and make them "not deletable", whichs
   means they can only be deleted from the side panel.
+
+`Resources:`
+
+Link to online site that converts word files to base64 strings
+https://products.aspose.app/pdf/conversion/docx-to-base64
