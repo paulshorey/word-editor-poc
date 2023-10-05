@@ -1,12 +1,11 @@
 import * as React from "react";
-import { DefaultButton } from "@fluentui/react";
-
 import { HeroListItem } from "./HeroList";
 import Progress from "./Progress";
 import AddComponent from "../commands/AddComponent";
 import GetFirstParagraph from "../commands/GetFirstParagraph";
 import AddContentControl from "../commands/AddContentControl";
 import ToggleCCDeletable from "../commands/ToggleCCDeletable";
+import AddDataElement from "./controls/AddDataElement";
 
 /* global Word, require */
 
@@ -46,22 +45,6 @@ export default class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  addDataElement = async () => {
-    return Word.run(async (context) => {
-      const contentRange = context.document.getSelection();
-      const contentControl = contentRange.insertContentControl();
-      contentControl.title = "";
-      // contentControl.tag = "CC_TAG";
-      contentControl.color = "Red";
-      contentControl.cannotDelete = false;
-      contentControl.cannotEdit = true;
-      contentControl.appearance = "Tags";
-      contentControl.insertParagraph("DATA_ELEMENT", "Before");
-
-      await context.sync();
-    });
-  };
-
   render() {
     const { title, isOfficeInitialized } = this.props;
     const tagName = "CC_TAG";
@@ -77,14 +60,8 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     return (
-      <div className="ms-welcome">
-        <DefaultButton
-          className="ms-welcome__action"
-          iconProps={{ iconName: "ChevronRight" }}
-          onClick={this.addDataElement}
-        >
-          Add Data Element
-        </DefaultButton>
+      <div className="faf-bg">
+        <AddDataElement />
         <br />
         <AddComponent />
         <br />
