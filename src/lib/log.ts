@@ -23,9 +23,9 @@ export function log(...args) {
 
 export function logKeys(label, obj) {
   try {
-    log(keysRecursive(label, obj));
+    console.log(keysRecursive(label, obj));
   } catch (e) {
-    log([label, e.toString()]);
+    console.log([label, e.toString()]);
   }
 }
 

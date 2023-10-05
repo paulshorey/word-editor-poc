@@ -1,38 +1,92 @@
 import create from "zustand";
 
-export type appStateType = {
-  turnstileToken: string;
-  turnstileExpires: number;
-  turnstileTokenSet: (token: string) => void;
-  turnstileTokenGet: () => string;
+/* global Word, require */
+
+export type dataElement = {
+  name: string;
+  otherData: any;
 };
 
-const app = create((set, get) => ({
-  turnstileToken: "",
-  turnstileExpires: 0,
+export type dataElementsStateType = {
+  searchResults: dataElement[];
+  usedInDocument: Record<string, dataElement>;
+  insertToDocument: (element: dataElement) => dataElement | undefined;
+  insertToDocumentByName: (elementName: string) => dataElement | undefined;
+};
+
+const dataElementsState = create((set, get) => ({
   /**
-   * Sets new token and expiration time
-   * Action will have to be performed before the expiration time
+   * Temporary, to hold the results from an API call. For now it is just dummy data.
    */
-  turnstileTokenSet: (token) => {
-    set({
-      // set new token
-      turnstileToken: token,
-      // expires after 295 seconds
-      turnstileExpires: Date.now() + 295000,
-    });
+  searchResults: [
+    {
+      name: "TEST_1",
+      otherData: "idk",
+    },
+    {
+      name: "TEST_2",
+      otherData: "idk",
+    },
+    {
+      name: "TEST_3",
+      otherData: "idk",
+    },
+    {
+      name: "TEST_4",
+      otherData: "idk",
+    },
+    {
+      name: "TEST_5",
+      otherData: "idk",
+    },
+  ],
+  /**
+   * All (unique) elements used in the document. We still need to decide how to manage the position of each variable in the document. This is too basic.
+   */
+  inDocument: {},
+  /**
+   * Shortcut to add by a name (string) -- not finished -- need to think about how to actually manage state and insert into document.
+   */
+  insertToDocumentByName: function (elementName: string) {
+    // convert varname to uppercase, remove all spaces and special characters
+    elementName = elementName
+      .toUpperCase()
+      .replace(/[^A-Z0-9_]/g, "_")
+      .replace(/[_]+/g, "_");
+    if (elementName[0] === "_") {
+      elementName = elementName.slice(1);
+    }
+    if (elementName[elementName.length - 1] === "_") {
+      elementName = elementName.slice(0, -1);
+    }
+    let element = { name: elementName, addedDate: new Date().toISOString() };
+    // insert into document
+    this.insertToDocument(element);
   },
   /**
-   * Checks for expiration, returns token
-   * If token is expired, returns empty string - component will have to re-render turnstile challenge
+   * After finding the component you want to use from the search results -- add it here by passing its entire object to this function.
    */
-  turnstileTokenGet: () => {
-    const state = get() as appStateType;
-    if (state.turnstileExpires < Date.now()) {
-      return "";
-    }
-    return state.turnstileToken;
+  insertToDocument: function (element: dataElement) {
+    // insert into document
+    Word.run(async (context) => {
+      const contentRange = context.document.getSelection();
+      const contentControl = contentRange.insertContentControl();
+      contentControl.title = "";
+      contentControl.tag = element.name;
+      contentControl.color = "#666666";
+      contentControl.cannotDelete = false;
+      contentControl.cannotEdit = false;
+      contentControl.appearance = "Tags";
+      contentControl.insertText(element.name, "Replace");
+      contentControl.cannotEdit = true;
+      context.sync().then(() => {
+        const state = get() as dataElementsStateType;
+        set({
+          usedInDocument: { ...state.usedInDocument, [element.name]: element },
+        });
+      });
+    });
   },
 }));
 
-export default app;
+export default dataElementsState;

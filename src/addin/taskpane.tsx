@@ -63,12 +63,12 @@ function myHandler() {
     clicked.variables = clicked.words.match(/({.+})/g);
 
     // save to application state
-    log("clicked", clicked);
+    console.log("clicked", clicked);
 
     // done
     return context.sync();
   }).catch(function (error) {
-    log("Error", error);
+    console.error("Error", error);
   });
 }
 
