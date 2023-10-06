@@ -2,6 +2,7 @@
 import React from "react";
 import { TextField, Stack, IconButton, DefaultButton } from "@fluentui/react";
 import dataElementsState, { dataElementsStateType, dataElement } from "@src/state/dataElements";
+import wordDocumentState, { wordDocumentStateType } from "@src/state/wordDocument";
 
 type Props = {
   control: dataElement;
@@ -9,6 +10,7 @@ type Props = {
 
 const Fieldset = ({ control }: Props) => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
+  const wordDocument = wordDocumentState((state) => state as wordDocumentStateType);
   const [tag, set_tag] = React.useState(control.tag);
 
   return (
@@ -43,7 +45,7 @@ const Fieldset = ({ control }: Props) => {
         title="Emoji"
         ariaLabel="Emoji"
         onClick={() => {
-          dataElements.selectId(control.id);
+          wordDocument.scrollToId(control.id);
         }}
       />
       <IconButton

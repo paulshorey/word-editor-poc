@@ -1,5 +1,5 @@
 import React from "react";
-import { DefaultButton, TextField } from "@fluentui/react";
+import { DefaultButton, TextField, Stack } from "@fluentui/react";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
 
 /* global Word, require */
@@ -8,13 +8,9 @@ const AddDataElement = () => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
   const [tag, set_tag] = React.useState("");
   return (
-    <div className="faf-fieldset" style={{ margin: "10px" }}>
+    <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
       <TextField
-        style={{
-          width: "100%",
-          minWidth: "200px",
-          flexGrow: "1",
-        }}
+        style={{}}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             dataElements.insertTag(tag);
@@ -39,7 +35,7 @@ const AddDataElement = () => {
       >
         Add
       </DefaultButton>
-    </div>
+    </Stack>
   );
 };
 

@@ -42,28 +42,6 @@ hr {
   padding: 0 18px;
 }
 
-.faf-variableDataElement {
-  /* THIS DOES NOT WORK. I DONT KNOW HOW TO PUT A CLASSNAME ONTO A CONTENT CONTROL */
-  color: orange;
-  font-family: "Courier New", Courier, monospace;
-  border: solid 1px orange;
-  padding: 3px;
-  border-radius: 6px;
-}
-
-.faf-button {
-  background: white;
-}
-.faf-fieldset {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  > * {
-    margin: 0 !important;
-    display: inline-block;
-  }
-}
-
 .faf-isDeletable {
   background-color: lightgreen;
 }

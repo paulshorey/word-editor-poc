@@ -27,9 +27,7 @@ export type dataElementsStateType = {
   deleteId: (id: id) => Promise<dataElement[]>;
   deleteTags: (tag: tag) => Promise<dataElement[]>;
   //
-  selectedId: id;
-  selectId: (id: id) => Promise<void>;
-  selectTags: (tag: tag) => Promise<void>;
+  scrollToId: (id: id) => Promise<void>;
 };
 
 const dataElementsState = create((set, get) => ({
@@ -87,6 +85,7 @@ const dataElementsState = create((set, get) => ({
         contentControl.tag = tagRenamed;
         contentControl.insertText(tagRenamed, "Replace");
         contentControl.cannotEdit = true;
+        contentControl.select("Start");
         await context.sync();
         // 2. Update state
         const all = await this.loadAll();
@@ -122,63 +121,15 @@ const dataElementsState = create((set, get) => ({
     });
   },
 
-  selectId: async function (id: id): Promise<void> {
-    console.warn("dataElementsState.selectTag()");
-    return new Promise((resolve) => {
-      Word.run(async (context) => {
-        // 1. Scroll to item
-        const item = context.document.contentControls.getById(id);
-        await context.sync();
-        item.select("End");
-        item.load("id");
-        await context.sync();
-        // 2. Update state
-        set({
-          selected: item.id,
-        });
-      });
-      resolve();
-    });
-  },
-
-  selectTags: function (tag: tag): Promise<void> {
-    console.warn("dataElementsState.selectTag()");
-    return new Promise((resolve) => {
-      Word.run(async (context) => {
-        const contentControls = context.document.contentControls.getByTag(tag);
-        context.load(contentControls, "items/length");
-        context.load(contentControls, "items/i");
-        await context.sync();
-        for (let i = 0; i < contentControls.items.length; i++) {
-          let item = contentControls.items[i];
-          // context.load(item, "select");
-          await context.sync();
-          setTimeout(async () => {
-            // 1. Scroll to item
-            item.select("End");
-            item.load("id");
-            await context.sync();
-            // 2. Update state
-            set({
-              selected: item.id,
-            });
-          }, 1500 * i);
-        }
-        await context.sync();
-        resolve();
-      });
-    });
-  },
-
   deleteId: function (id: id): Promise<dataElement[]> {
     console.warn("dataElementsState.deleteTag()");
     return new Promise((resolve) => {
       Word.run(async (context) => {
-        // 1. Delete from document
         const contentControl = context.document.contentControls.getById(id);
+        // 1. Delete from document
         await context.sync();
         contentControl.load("delete");
-        await context.sync();
+        contentControl.cannotDelete = false;
         contentControl.delete(false);
         await context.sync();
         // 2. Update state
@@ -197,6 +148,8 @@ const dataElementsState = create((set, get) => ({
         context.load(contentControls, "items");
         await context.sync();
         for (let item of contentControls.items) {
+          item.load("delete");
+          item.cannotDelete = false;
           item.delete(false);
         }
         await context.sync();
