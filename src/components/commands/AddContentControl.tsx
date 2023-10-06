@@ -23,11 +23,7 @@ interface AddContentControlInterface {
 }
 const AddContentControl = ({ tagName }: AddContentControlInterface) => {
   return (
-    <DefaultButton
-      className="ms-welcome__action"
-      iconProps={{ iconName: "ChevronRight" }}
-      onClick={() => handleClick(tagName)}
-    >
+    <DefaultButton className="faf-button" iconProps={{ iconName: "ChevronRight" }} onClick={() => handleClick(tagName)}>
       Add Content Control
     </DefaultButton>
   );

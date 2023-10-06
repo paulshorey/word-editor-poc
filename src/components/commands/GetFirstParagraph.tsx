@@ -30,7 +30,7 @@ const handleClick = () => {
 
 const GetFirstParagraph = () => {
   return (
-    <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
+    <DefaultButton className="faf-button" iconProps={{ iconName: "ChevronRight" }} onClick={handleClick}>
       Get First Para
     </DefaultButton>
   );

@@ -40,7 +40,7 @@ const ToggleCCDeletable = ({ tagName }: ToggleCCDeletableInterface) => {
 
   return (
     <DefaultButton
-      className={`ms-welcome__action ${toggleStyle}`}
+      className={`faf-button ${toggleStyle}`}
       iconProps={{ iconName: "ChevronRight" }}
       onClick={() => {
         handleClick(tagName, deletable);
