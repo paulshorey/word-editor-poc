@@ -8,6 +8,7 @@ const handleClick = () => {
   return Word.run(async (context) => {
     const control = context.document.contentControls.getFirst();
     contextLoad(context, control);
+    context.sync();
     control.color = "purple";
     control.clear();
     return context.sync();

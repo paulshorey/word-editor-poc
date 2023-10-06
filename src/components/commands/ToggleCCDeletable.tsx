@@ -32,7 +32,7 @@ interface ToggleCCDeletableInterface {
   tagName: string;
 }
 const ToggleCCDeletable = ({ tagName }: ToggleCCDeletableInterface) => {
-  const [deletable, setDeletable] = useState<boolean>();
+  const [deletable, setDeletable] = useState<boolean>(true);
   const [toggleStyle, setToggleStyle] = useState("faf-isDeletable");
   useEffect(() => {
     setToggleStyle(deletable ? "faf-isDeletable" : "faf-isNotDeletable");

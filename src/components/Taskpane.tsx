@@ -62,19 +62,13 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     return (
-      <div className="faf-bg">
+      <div className="faf-bg" style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "0 18px" }}>
         <AddDataElement />
-        <br />
         <AddComponent />
-        <br />
         <GetFirstParagraph />
-        <br />
         <AddContentControl tagName={tagName} />
-        <br />
         <ToggleCCDeletable tagName={tagName} />
-        <br />
         <PrepareCC4Save />
-        <br />
         <Scroll2LastComponent />
       </div>
     );
