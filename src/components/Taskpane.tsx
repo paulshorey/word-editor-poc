@@ -7,6 +7,7 @@ import DataElements from "./DataElements";
 import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
+import AddConditionalComponent from "@src/components/commands/AddConditionalComponent";
 
 /* global Word, require */
 
@@ -41,6 +42,7 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <ToggleCCDeletable />
       <PrepareCC4Save />
       <Scroll2LastComponent />
+      <AddConditionalComponent />
     </div>
   );
 }
