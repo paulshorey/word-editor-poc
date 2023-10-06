@@ -12,6 +12,9 @@ export type dataElementsStateType = {
   usedInDocument: Record<string, dataElement>;
   insertToDocument: (element: dataElement) => dataElement | undefined;
   insertToDocumentByName: (name: string) => dataElement | undefined;
+  getAllFromDocument: () => Promise<Record<string, dataElement>>;
+  scrollToByName: (name: string) => Promise<void>;
+  deleteByName: (name: string) => Promise<Record<string, dataElement>>;
 };
 
 const dataElementsState = create((set, get) => ({
@@ -72,7 +75,7 @@ const dataElementsState = create((set, get) => ({
     Word.run(async (context) => {
       const contentRange = context.document.getSelection();
       const contentControl = contentRange.insertContentControl();
-      contentControl.title = "";
+      contentControl.title = ":";
       contentControl.tag = element.tag;
       contentControl.color = "#666666";
       contentControl.cannotDelete = false;
@@ -86,6 +89,77 @@ const dataElementsState = create((set, get) => ({
           usedInDocument: { ...state.usedInDocument, [element.tag]: element },
         });
         await context.sync();
+      });
+    });
+  },
+
+  scrollToByName: function (name: string): Promise<void> {
+    return new Promise((resolve) => {
+      Word.run(async (context) => {
+        console.warn("dataElementsState.scrollToByName()");
+        const contentControls = context.document.contentControls.getByTag(name);
+        context.load(contentControls, "select");
+        context.load(contentControls, "title");
+        context.load(contentControls, "items");
+        // delete all from state
+        context.sync().then(async () => {
+          for (let item of contentControls.items) {
+            context.load(item, "select");
+            item.select("End");
+          }
+          await context.sync();
+          resolve();
+        });
+      });
+    });
+  },
+
+  deleteByName: function (name: string) {
+    return new Promise((resolve) => {
+      Word.run(async (context) => {
+        console.warn("dataElementsState.deleteByName()");
+        // 1.  delete from state
+        const state = get() as dataElementsStateType;
+        const all = [];
+        for (let tag in state.usedInDocument) {
+          if (tag !== name) {
+            all[tag] = state.usedInDocument[tag];
+          }
+        }
+        set({ usedInDocument: all });
+        // 2. delete from document
+        const contentControls = context.document.contentControls.getByTag(name);
+        context.load(contentControls, "delete");
+        context.load(contentControls, "title");
+        context.load(contentControls, "items");
+        context.sync().then(async () => {
+          for (let item of contentControls.items) {
+            context.load(item, "delete");
+            item.delete(false);
+          }
+          await context.sync();
+          resolve(all);
+        });
+      });
+    });
+  },
+
+  getAllFromDocument: function () {
+    return new Promise((resolve) => {
+      Word.run(async (context) => {
+        console.warn("dataElementsState.getAllFromDocument()");
+        const contentControls = context.document.contentControls.getByTitle(":");
+        context.load(contentControls, "title");
+        context.load(contentControls, "items");
+        context.sync().then(async () => {
+          const state = get() as dataElementsStateType;
+          const all = {};
+          for (let item of contentControls.items) {
+            all[item.tag] = { tag: item.tag };
+          }
+          set({ usedInDocument: all });
+          resolve(all);
+        });
       });
     });
   },

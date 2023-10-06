@@ -29,9 +29,10 @@ const handleClick = (tagName: string, isDeletable: boolean) => {
 };
 
 interface ToggleCCDeletableInterface {
-  tagName: string;
+  tagName?: string;
 }
 const ToggleCCDeletable = ({ tagName }: ToggleCCDeletableInterface) => {
+  tagName = tagName || "CC_TAG";
   const [deletable, setDeletable] = useState<boolean>(true);
   const [toggleStyle, setToggleStyle] = useState("faf-isDeletable");
   useEffect(() => {

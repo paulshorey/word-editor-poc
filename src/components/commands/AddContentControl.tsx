@@ -19,9 +19,10 @@ const handleClick = (tagName: string) => {
 };
 
 interface AddContentControlInterface {
-  tagName: string;
+  tagName?: string;
 }
 const AddContentControl = ({ tagName }: AddContentControlInterface) => {
+  tagName = tagName || "CC_TAG";
   return (
     <DefaultButton className="faf-button" iconProps={{ iconName: "ChevronRight" }} onClick={() => handleClick(tagName)}>
       Add Content Control
