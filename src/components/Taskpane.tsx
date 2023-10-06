@@ -7,6 +7,7 @@ import AddContentControl from "@src/components/commands/AddContentControl";
 import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
 import AddDataElement from "./controls/AddDataElement";
 import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
+import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 
 /* global Word, require */
 
@@ -73,6 +74,8 @@ export default class App extends React.Component<AppProps, AppState> {
         <ToggleCCDeletable tagName={tagName} />
         <br />
         <PrepareCC4Save />
+        <br />
+        <Scroll2LastComponent />
       </div>
     );
   }
