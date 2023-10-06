@@ -6,7 +6,7 @@ import dataElementsState, { dataElementsStateType } from "@src/state/dataElement
 
 const AddDataElement = () => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
-  const [varname, set_varname] = React.useState("");
+  const [tag, set_tag] = React.useState("");
   return (
     <div className="faf-fieldset" style={{ margin: "10px" }}>
       <TextField
@@ -15,20 +15,26 @@ const AddDataElement = () => {
           minWidth: "200px",
           flexGrow: "1",
         }}
-        onChange={(_e, value) => {
-          set_varname(value);
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            dataElements.insertTag(tag);
+          }
+          if (e.key.length > 1) return;
         }}
-        placeholder="DATA_ELEMENT_NAME"
+        onChange={(_e, value) => {
+          set_tag(value);
+        }}
+        placeholder="ELEMENT_NAME"
       />
       <DefaultButton
-        className="faf-button"
         iconProps={{ iconName: "ChevronRight" }}
         onClick={() => {
-          dataElements.insertToDocumentByName(varname);
+          dataElements.insertTag(tag);
         }}
         style={{
           width: "40px",
           flexGrow: "0",
+          background: "none",
         }}
       >
         Add

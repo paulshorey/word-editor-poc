@@ -5,6 +5,7 @@ import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { logClear } from "@src/lib/log";
+// import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
 
 /* global document, Word, Office, module, require */
 
@@ -28,14 +29,15 @@ const render = (Component) => {
 Office.onReady(() => {
   isOfficeInitialized = true;
   render(App);
-  Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, myHandler, function (result) {
+  Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, onSelect, function (result) {
     if (result.status === Office.AsyncResultStatus.Failed) {
       document.getElementById("message").innerText = result.error.message;
     }
   });
 });
 
-function myHandler() {
+function onSelect() {
+  // // // const dataElements = dataElementsState((state) => state as dataElementsStateType);
   Word.run(async function (context) {
     logClear();
     // Get the current selection as a range.
@@ -45,7 +47,7 @@ function myHandler() {
     var clicked = {
       paragraphs: [],
       words: "",
-      variables: [],
+      tag: "",
     };
 
     // log all paragraphs that the selection touches
@@ -55,18 +57,30 @@ function myHandler() {
 
     // log word under cursor
     var words = selectionRange.getTextRanges([" ", "\t", "\r", "\n"], true); // just get everything including punctuation until nearest whitespace
-    words.load("items/text");
+    words.load("items");
     await context.sync();
-    clicked.words = words.items.map((p) => p.text).join(" ");
-
-    // parse variables
-    clicked.variables = clicked.words.match(/({.+})/g);
+    clicked.tag = "";
+    wordItems: for (let item of words.items) {
+      if (/[A-Z_]+/.test(item.text)) {
+        const contentControls = context.document.contentControls.getByTag(item.text);
+        // context.load(contentControls, "select");
+        context.load(contentControls, "title");
+        context.load(contentControls, "items");
+        // delete all from state
+        await context.sync();
+        for (let control of contentControls.items) {
+          context.load(control, "tag");
+          // item.select("End");
+          // dataElements.updateSelectedTag(control.tag);
+          clicked.tag = item.text;
+          break wordItems;
+        }
+      }
+    }
 
     // save to application state
     // eslint-disable-next-line no-undef
-    console.log("clicked", clicked);
-
-    // done
+    console.log("clicked document", clicked);
     return context.sync();
   }).catch(function (error) {
     // eslint-disable-next-line no-undef

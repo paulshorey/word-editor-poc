@@ -22,6 +22,16 @@ strong {
   font-weight: bold;
 }
 
+hr {
+  display: block;
+  margin: auto;
+  padding: 0;
+  height: 1px;
+  width: 50%;
+  border: none;
+  background: #ddd;
+}
+
 /*======================= FAF ================*/
 
 .faf-taskpane {
