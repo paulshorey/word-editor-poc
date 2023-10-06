@@ -1,3 +1,17 @@
+/* global document, Word, require */
+
+export function logAllControls() {
+  Word.run(async (context) => {
+    const contentControls = context.document.contentControls.getByTitle("");
+    context.load(contentControls, "items");
+    context.sync().then(async () => {
+      for (let item of contentControls.items) {
+        console.log("item", item);
+      }
+    });
+  });
+}
+
 export function logClear() {
   try {
     document.getElementById("message").innerHTML = "";

@@ -1,9 +1,9 @@
 import create from "zustand";
 
-/* global Word, require */
+/* global document, Word, require */
 
 export type dataElement = {
-  name: string;
+  tag: string;
   otherData: any;
 };
 
@@ -11,7 +11,7 @@ export type dataElementsStateType = {
   searchResults: dataElement[];
   usedInDocument: Record<string, dataElement>;
   insertToDocument: (element: dataElement) => dataElement | undefined;
-  insertToDocumentByName: (elementName: string) => dataElement | undefined;
+  insertToDocumentByName: (name: string) => dataElement | undefined;
 };
 
 const dataElementsState = create((set, get) => ({
@@ -20,23 +20,23 @@ const dataElementsState = create((set, get) => ({
    */
   searchResults: [
     {
-      name: "TEST_1",
+      tag: "TEST_1",
       otherData: "idk",
     },
     {
-      name: "TEST_2",
+      tag: "TEST_2",
       otherData: "idk",
     },
     {
-      name: "TEST_3",
+      tag: "TEST_3",
       otherData: "idk",
     },
     {
-      name: "TEST_4",
+      tag: "TEST_4",
       otherData: "idk",
     },
     {
-      name: "TEST_5",
+      tag: "TEST_5",
       otherData: "idk",
     },
   ],
@@ -45,21 +45,22 @@ const dataElementsState = create((set, get) => ({
    */
   inDocument: {},
   /**
-   * Shortcut to add by a name (string) -- not finished -- need to think about how to actually manage state and insert into document.
+   * Shortcut to add by a tag (string) -- not finished -- need to think about how to actually manage state and insert into document.
    */
-  insertToDocumentByName: function (elementName: string) {
-    // convert varname to uppercase, remove all spaces and special characters
-    elementName = elementName
+  insertToDocumentByName: function (name: string) {
+    // convert vartag to uppercase, remove all spaces and special characters
+    name = name
       .toUpperCase()
       .replace(/[^A-Z0-9_]/g, "_")
       .replace(/[_]+/g, "_");
-    if (elementName[0] === "_") {
-      elementName = elementName.slice(1);
+    if (name[0] === "_") {
+      name = name.slice(1);
     }
-    if (elementName[elementName.length - 1] === "_") {
-      elementName = elementName.slice(0, -1);
+    if (name[name.length - 1] === "_") {
+      name = name.slice(0, -1);
     }
-    let element = { name: elementName, addedDate: new Date().toISOString() };
+    name = "DATA_" + name;
+    let element = { tag: name, addedDate: new Date().toISOString() };
     // insert into document
     this.insertToDocument(element);
   },
@@ -72,18 +73,19 @@ const dataElementsState = create((set, get) => ({
       const contentRange = context.document.getSelection();
       const contentControl = contentRange.insertContentControl();
       contentControl.title = "";
-      contentControl.tag = element.name;
+      contentControl.tag = element.tag;
       contentControl.color = "#666666";
       contentControl.cannotDelete = false;
       contentControl.cannotEdit = false;
       contentControl.appearance = "Tags";
-      contentControl.insertText(element.name, "Replace");
+      contentControl.insertText(element.tag, "Replace");
       contentControl.cannotEdit = true;
-      context.sync().then(() => {
+      context.sync().then(async () => {
         const state = get() as dataElementsStateType;
         set({
-          usedInDocument: { ...state.usedInDocument, [element.name]: element },
+          usedInDocument: { ...state.usedInDocument, [element.tag]: element },
         });
+        await context.sync();
       });
     });
   },
