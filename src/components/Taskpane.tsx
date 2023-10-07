@@ -8,6 +8,7 @@ import DataElements from "./DataElements";
 import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
+import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 // import useSelect from "@src/hooks/useSelect";
 
 /* global document, Office, Word, require */
@@ -18,10 +19,12 @@ export interface Props {
 }
 
 export default function Taskpane({ title, isOfficeInitialized }: Props) {
+  const conditionalComponents = conditionalComponentsState((state) => state as conditionalComponentsStateType);
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
 
   React.useEffect(() => {
     if (isOfficeInitialized) {
+      conditionalComponents.loadAll();
       dataElements.loadAll();
     }
   }, [isOfficeInitialized]);
