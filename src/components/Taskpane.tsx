@@ -1,5 +1,6 @@
 import React from "react";
 import AddComponent from "@src/components/commands/AddComponent";
+import ConditionalComponents from "@src/components/ConditionalComponents";
 import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
 import AddContentControl from "@src/components/commands/AddContentControl";
 import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
@@ -7,7 +8,6 @@ import DataElements from "./DataElements";
 import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
-import AddConditionalComponent from "@src/components/commands/AddConditionalComponent";
 // import useSelect from "@src/hooks/useSelect";
 
 /* global document, Office, Word, require */
@@ -44,13 +44,15 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <hr />
       <DataElements />
       <hr />
+      <ConditionalComponents />
+      <hr />
+
       <AddComponent />
       <GetFirstParagraph />
       <AddContentControl />
       <ToggleCCDeletable />
       <PrepareCC4Save />
       <Scroll2LastComponent />
-      <AddConditionalComponent />
     </div>
   );
 }
