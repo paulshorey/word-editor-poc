@@ -1,5 +1,5 @@
 import React from "react";
-import AddComponent from "@src/components/commands/AddComponent";
+import Components from "@src/components/Components";
 import ConditionalComponents from "@src/components/ConditionalComponents";
 import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
 import AddContentControl from "@src/components/commands/AddContentControl";
@@ -9,6 +9,7 @@ import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
+import componentsState, { componentsStateType } from "@src/state/componentsState";
 // import useSelect from "@src/hooks/useSelect";
 
 /* global document, Office, Word, require */
@@ -19,11 +20,13 @@ export interface Props {
 }
 
 export default function Taskpane({ title, isOfficeInitialized }: Props) {
+  const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const conditionalComponents = conditionalComponentsState((state) => state as conditionalComponentsStateType);
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
 
   React.useEffect(() => {
     if (isOfficeInitialized) {
+      components.loadAll();
       conditionalComponents.loadAll();
       dataElements.loadAll();
     }
@@ -49,8 +52,9 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <hr />
       <ConditionalComponents />
       <hr />
+      <Components />
+      <hr />
 
-      <AddComponent />
       <GetFirstParagraph />
       <AddContentControl />
       <ToggleCCDeletable />

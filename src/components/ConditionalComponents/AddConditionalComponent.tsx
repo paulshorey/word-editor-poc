@@ -13,7 +13,7 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
-  const [tag, set_tag] = React.useState("");
+  const [tag, setTag] = React.useState("");
   return (
     <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
       <TextField
@@ -29,7 +29,7 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
           if (e.key.length > 1) return;
         }}
         onChange={(_e, value) => {
-          set_tag(value);
+          setTag(value);
         }}
         placeholder="CONDITION"
       />
