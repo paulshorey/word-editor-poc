@@ -66,8 +66,7 @@ const conditionalComponentsState = create((set, get) => ({
    */
   insertTag: function (tagName: string, condition: string) {
     return new Promise((resolve) => {
-      const defaultCondition = (context: Word.RequestContext, condition: string | null) => {
-        const contentRange = context.document.getSelection().getRange("Whole");
+      const defaultCondition = (context: Word.RequestContext, contentRange: Word.Range, condition: string | null) => {
         const contentControl = contentRange.insertContentControl();
         contentControl.set({
           appearance: "Tags",
@@ -95,10 +94,9 @@ const conditionalComponentsState = create((set, get) => ({
 
         context.load(contentControl);
         await context.sync();
-        defaultCondition(context, condition);
+        defaultCondition(context, contentControl.getRange("Content"), condition);
         context.load(contentControl);
-        await context.sync();
-        contentControl.select("End");
+
         context.sync().then(async () => {
           // 2. Update state
           const dataElement = {
