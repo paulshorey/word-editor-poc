@@ -1,7 +1,7 @@
 /* global console */
 import React from "react";
 import { TextField, Stack, IconButton } from "@fluentui/react";
-import wordDocumentState, { wordDocumentStateType } from "@src/state/wordDocument";
+import * as wordDocument from "@src/state/wordDocument";
 import { dataElement } from "@src/state/conditionalComponentsState";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
 
@@ -11,7 +11,6 @@ type Props = {
 
 const ComponentFieldset = ({ control }: Props) => {
   const components: componentsStateType = componentsState((state) => state as componentsStateType);
-  const wordDocument = wordDocumentState((state) => state as wordDocumentStateType);
   const [tag, setTag] = React.useState(control.title);
   return (
     <Stack horizontal style={{ width: "100%", justifyContent: "space-between" }}>

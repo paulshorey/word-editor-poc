@@ -4,10 +4,16 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import useSelect from "@src/hooks/useSelect";
 
 /* global document, Word, Office, module, require */
 
 initializeIcons();
+// Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+// Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+// Office.context.document.settings.saveAsync();
+
+console.log("TASKPANE . TSX");
 
 let isOfficeInitialized = false;
 
@@ -27,6 +33,9 @@ const render = (Component) => {
 Office.onReady(() => {
   isOfficeInitialized = true;
   render(App);
+  if (isOfficeInitialized) {
+    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, useSelect);
+  }
 });
 
 if ((module as any).hot) {

@@ -5,9 +5,18 @@
 
 /* global global, Office, self, window */
 
+console.log("COMMANDS . TS");
+
+// Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+// Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+// Office.context.document.settings.saveAsync();
+
 Office.onReady(() => {
-  // If needed, Office.js is ready to be called
+  console.log("OFFICE . ON READY");
 });
+Office.initialize = () => {
+  console.log("OFFICE . INITIALIZE");
+};
 
 /**
  * Shows a notification when the add-in command is executed.

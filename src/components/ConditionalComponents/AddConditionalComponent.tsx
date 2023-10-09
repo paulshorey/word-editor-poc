@@ -15,13 +15,9 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
   );
   const [title, setTitle] = React.useState("");
   return (
-    <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
+    <Stack horizontal className="faf-fieldgroup">
       <TextField
-        style={{
-          width: "100%",
-          minWidth: "200px",
-          flexGrow: "1",
-        }}
+        className="faf-fieldgroup-input"
         onKeyDown={(e) => {
           // if (e.key === "Enter") {
           //   conditionalComponents.insertTag(tagName, title);
@@ -35,7 +31,7 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
       />
 
       <DefaultButton
-        className="faf-button"
+        className="faf-fieldgroup-button"
         iconProps={{ iconName: "ChevronRight" }}
         onClick={() => conditionalComponents.insertTag(tagName, title)}
       >

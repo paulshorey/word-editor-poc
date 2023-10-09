@@ -32,25 +32,7 @@ hr {
   background: #ddd;
 }
 
-button:hover {
-  cursor: pointer;
-  background: #fff !important;
-}
-
 /*======================= FAF ================*/
-
-.faf-fieldgroup {
-  margin: 10px 0;
-  width: 100%;
-}
-.faf-fieldgroup-input {
-  flex-grow: 1;
-}
-.faf-fieldgroup-button {
-  width: 40px;
-  flex-grow: 0;
-  background: none;
-}
 
 .faf-taskpane {
   background: #efefef;

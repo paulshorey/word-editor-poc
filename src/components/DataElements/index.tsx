@@ -3,12 +3,14 @@ import dataElementsState, { dataElementsStateType } from "@src/state/dataElement
 import Fieldset from "@src/components/DataElements/Fieldset";
 import AddNew from "./AddNew";
 import { Stack } from "@fluentui/react";
-import wordDocumentState from "@src/state/wordDocument";
-import { wordDocumentStateType } from "@src/state/wordDocument";
+import * as wordDocument from "@src/state/wordDocument";
 
 const ViewDataElements = () => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
-  const wordDocument = wordDocumentState((state) => state as wordDocumentStateType);
+  const [selectedTag, setSelectedTag] = React.useState("");
+  wordDocument.state.subscribe((state) => {
+    setSelectedTag(state.selectedTag);
+  });
   return (
     <div style={{ margin: "0 0 10px 0" }}>
       <Stack
@@ -20,12 +22,8 @@ const ViewDataElements = () => {
       </Stack>
       <AddNew />
       {dataElements.items?.map((control) => (
-        <Fieldset key={control.id} control={control} />
+        <Fieldset key={control.id} control={control} selectedTag={selectedTag} />
       ))}
-      <Stack horizontal>
-        <span>Selected tag:</span>
-        <span>{wordDocument.selectedTag}</span>
-      </Stack>
     </div>
   );
 };

@@ -9,14 +9,18 @@ const AddComponent = () => {
   const [loadDocument, setLoadDocument] = useState("NO_PICK");
 
   return (
-    <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
-      <select style={{ height: "32px" }} onChange={(value) => setLoadDocument(value.target.value)}>
+    <Stack horizontal className="faf-fieldgroup">
+      <select
+        className="faf-fieldgroup-input"
+        style={{ height: "32px" }}
+        onChange={(value) => setLoadDocument(value.target.value)}
+      >
         <option value="NO_PICK">Pick a Document</option>
         <option value="comp_simple_word">Simple Document</option>
         <option value="comp_with_table">Complex Document</option>
       </select>
       <DefaultButton
-        className="faf-button"
+        className="faf-fieldgroup-button"
         iconProps={{ iconName: "ChevronRight" }}
         onClick={() => components.insertTag(loadDocument)}
       >

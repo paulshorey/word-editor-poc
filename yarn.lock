@@ -577,6 +577,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@persevie/statemanjs@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@persevie/statemanjs/-/statemanjs-1.5.7.tgz#1ca0054719b5f72de235f9d2b2d3b126f1ac2251"
+  integrity sha512-vyfai2EKv+un2JpeCQqOdXVcVsuHNYYxoDIbjHs2BvpkOUqABjpiVKROBtw9ptyqpK4BEPoHjvYbxf20UpLvLw==
+
 "@swc/helpers@^0.5.1":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.5.2.tgz#85ea0c76450b61ad7d10a37050289eded783c27d"

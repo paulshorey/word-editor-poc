@@ -8,9 +8,9 @@ const AddDataElement = () => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
   const [tag, set_tag] = React.useState("");
   return (
-    <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
+    <Stack horizontal className="faf-fieldgroup">
       <TextField
-        style={{}}
+        className="faf-fieldgroup-input"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             dataElements.insertTag(tag);
@@ -23,14 +23,10 @@ const AddDataElement = () => {
         placeholder="ELEMENT_NAME"
       />
       <DefaultButton
+        className="faf-fieldgroup-button"
         iconProps={{ iconName: "ChevronRight" }}
         onClick={() => {
           dataElements.insertTag(tag);
-        }}
-        style={{
-          width: "40px",
-          flexGrow: "0",
-          background: "none",
         }}
       >
         Add

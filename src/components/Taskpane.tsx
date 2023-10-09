@@ -10,7 +10,6 @@ import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent"
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
-// import useSelect from "@src/hooks/useSelect";
 
 /* global document, Office, Word, require */
 
@@ -31,10 +30,6 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       dataElements.loadAll();
     }
   }, [isOfficeInitialized]);
-
-  // if (isOfficeInitialized) {
-  //   Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, useSelect);
-  // }
 
   if (!isOfficeInitialized) {
     return (

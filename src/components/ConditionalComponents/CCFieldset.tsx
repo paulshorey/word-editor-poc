@@ -1,7 +1,7 @@
 /* global console */
 import React, { useEffect, useState } from "react";
 import { TextField, Stack, IconButton } from "@fluentui/react";
-import wordDocumentState, { wordDocumentStateType } from "@src/state/wordDocument";
+import * as wordDocument from "@src/state/wordDocument";
 import conditionalComponentsState, {
   conditionalComponentsStateType,
   dataElement,
@@ -16,7 +16,6 @@ const CCFieldset = ({ control }: Props) => {
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
-  const wordDocument = wordDocumentState((state) => state as wordDocumentStateType);
   const [tag, setTag] = useState(control.title);
   const [rotation, setRotation] = useState("rotate(0deg)");
   const [isOpen, setIsOpen] = useState(false);
