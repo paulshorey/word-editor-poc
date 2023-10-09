@@ -4,10 +4,10 @@ import ConditionalComponents from "@src/components/ConditionalComponents";
 import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
 import AddContentControl from "@src/components/commands/AddContentControl";
 import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
-import DataElements from "./DataElements";
+import DataElements from "@src/components/DataElements";
 import PrepareCC4Save from "@src/components/commands/PrepareCC4Save";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
-import dataElementsState, { dataElementsStateType } from "@src/state/dataElements";
+import dataElementsState, { dataElementsStateType } from "@src/state/dataElementsState";
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
 
