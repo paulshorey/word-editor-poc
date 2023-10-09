@@ -1,6 +1,6 @@
 /* global console */
 import React from "react";
-import { TextField, Stack, IconButton, DefaultButton } from "@fluentui/react";
+import { TextField, Stack, IconButton } from "@fluentui/react";
 import dataElementsState, { dataElementsStateType, dataElement } from "@src/state/dataElements";
 import wordDocumentState, { wordDocumentStateType } from "@src/state/wordDocument";
 

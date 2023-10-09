@@ -2,6 +2,7 @@
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
 import { TAGNAMES } from "@src/constants/constants";
+import { dataElementType } from "@src/state/componentsState";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -28,7 +29,8 @@ export type dataElement = {
 export type conditionalComponentsStateType = {
   items: dataElement[];
   loadAll: () => Promise<Record<id, dataElement>>;
-  insertTag: (tagName: string, condition: string) => dataElement | undefined;
+  getItemById: (id: id) => dataElementType | undefined;
+  insertTag: (tagName: string, displayName: string) => dataElement | undefined;
   //
   deleteId: (id: id) => Promise<dataElement[]>;
   // deleteTags: (tag: tag) => Promise<dataElement[]>;
@@ -53,7 +55,8 @@ const conditionalComponentsState = create((set, get) => ({
         // 2. Update state
         const all = [];
         for (let item of contentControls.items) {
-          all.push({ id: item.id, tag: item.tag, title: item.title });
+          console.log("===>", item.id, item.tag, item.title);
+          all.push({ id: item.id, tag: item.tag, title: item.title.replace(/^COND: /, "") });
         }
         set({ items: all });
         resolve(null);
@@ -61,12 +64,22 @@ const conditionalComponentsState = create((set, get) => ({
     });
   },
 
+  getItemById: function () {
+    return this.items[0] ? this.items[0] : undefined;
+  },
+
   /**
    * Add a dataElement to the template, into the current cursor selection
    */
-  insertTag: function (tagName: string, condition: string) {
+  insertTag: function (tagName: string, displayName: string) {
+    // eslint-disable-next-line no-debugger
+    debugger;
     return new Promise((resolve) => {
-      const defaultCondition = (context: Word.RequestContext, contentRange: Word.Range, condition: string | null) => {
+      const defaultCondition = async (
+        context: Word.RequestContext,
+        contentRange: Word.Range,
+        displayName: string | null
+      ) => {
         const contentControl = contentRange.insertContentControl();
         contentControl.set({
           appearance: "Tags",
@@ -74,9 +87,10 @@ const conditionalComponentsState = create((set, get) => ({
           cannotDelete: false,
           color: "maroon",
           tag: "Default",
-          title: condition || "Un-Conditional",
+          title: displayName || "Un-Conditional",
         });
-        return context.sync();
+        await context.sync();
+        return contentControl;
       };
 
       // 1. Insert into document
@@ -89,25 +103,31 @@ const conditionalComponentsState = create((set, get) => ({
           cannotDelete: false,
           color: "blue",
           tag: tagName,
-          title: "CONDITION",
+          title: `COND: ${displayName}`,
         });
 
         context.load(contentControl);
         await context.sync();
-        defaultCondition(context, contentControl.getRange("Content"), condition);
+        const defaultConditionObj = await defaultCondition(context, contentControl.getRange("Content"), displayName);
+        // eslint-disable-next-line no-debugger
+        debugger;
+        console.log("===> Default ID:", defaultConditionObj.id);
         context.load(contentControl);
-
         context.sync().then(async () => {
           // 2. Update state
           const dataElement = {
             id: contentControl.id,
             tag: contentControl.tag,
+            title: displayName,
+            outputOptions: [{ id: defaultConditionObj.id, title: "Default", condition: "true" }],
           };
           const state = get() as conditionalComponentsStateType;
+          const newItems = [...state.items, dataElement];
           set({
-            items: [dataElement, ...state.items],
+            items: newItems,
           });
           await context.sync();
+          await this.loadAll();
           resolve(dataElement);
         });
       });
@@ -115,7 +135,7 @@ const conditionalComponentsState = create((set, get) => ({
   },
 
   deleteId: function (id: id): Promise<dataElement[]> {
-    console.warn("dataElementsState.deleteTag()");
+    console.warn("===> dataElementsState.deleteTag()", id);
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Delete from document

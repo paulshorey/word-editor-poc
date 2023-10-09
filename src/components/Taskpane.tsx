@@ -50,9 +50,9 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <hr />
       <DataElements />
       <hr />
-      <ConditionalComponents />
-      <hr />
       <Components />
+      <hr />
+      <ConditionalComponents />
       <hr />
 
       <GetFirstParagraph />

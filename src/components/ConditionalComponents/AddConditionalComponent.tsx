@@ -13,7 +13,7 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
-  const [tag, setTag] = React.useState("");
+  const [title, setTitle] = React.useState("");
   return (
     <Stack horizontal style={{ margin: "10px 0", width: "100%" }}>
       <TextField
@@ -23,21 +23,21 @@ const AddConditionalComponent = ({ tagName = TAGNAMES.conditional }: AddConditio
           flexGrow: "1",
         }}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            conditionalComponents.insertTag(tagName, tag);
-          }
+          // if (e.key === "Enter") {
+          //   conditionalComponents.insertTag(tagName, title);
+          // }
           if (e.key.length > 1) return;
         }}
         onChange={(_e, value) => {
-          setTag(value);
+          setTitle(value);
         }}
-        placeholder="CONDITION"
+        placeholder="Name"
       />
 
       <DefaultButton
         className="faf-button"
         iconProps={{ iconName: "ChevronRight" }}
-        onClick={() => conditionalComponents.insertTag(tagName, tag)}
+        onClick={() => conditionalComponents.insertTag(tagName, title)}
       >
         Add
       </DefaultButton>

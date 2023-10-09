@@ -41,6 +41,7 @@ const wordDocumentState = create((set, _get) => ({
         await context.sync();
         item.select("End");
         item.load("id");
+        item.font.highlightColor = ""; // "KHAKI"
         await context.sync();
         // 2. Update state
         set({

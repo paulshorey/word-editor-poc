@@ -118,6 +118,7 @@ const componentsState = create((set, get) => ({
             items: [dataElement, ...state.items],
           });
           await context.sync();
+          await this.loadAll();
           resolve(dataElement);
         });
       });
