@@ -3,22 +3,53 @@ import { Popup } from "@fluentui/react";
 import conditionalComponentsState, {
   conditionalComponentsStateType,
   dataElement,
+  outputOption,
 } from "@src/state/conditionalComponentsState";
 
-type Props = {
+type DetailLinesType = {
+  lines: outputOption[];
+};
+const DetailLines = ({ lines }: DetailLinesType) => {
+  if (lines.length === 0) {
+    return null;
+  }
+  return (
+    <div>
+      {lines.map((line) => (
+        <div
+          key={line.id}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "bisque",
+            padding: "4px",
+            marginBottom: "8px",
+          }}
+        >
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "80px" }}>Scenario:</div>
+            <div>{line.title}</div>
+          </div>
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "80px" }}>Rule:</div>
+            <div>TRUE</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+type DetailProps = {
   control: dataElement;
 };
-const Details = ({ control: { id, tag, title } }: Props) => {
-  // eslint-disable-next-line no-undef
-  console.log("===>", { id, tag, title });
+
+const Details = ({ control: { id, title } }: DetailProps) => {
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
   const myObj = conditionalComponents.getItemById(id);
-  // eslint-disable-next-line no-undef
-  console.log("===> KBA");
-  // eslint-disable-next-line no-debugger
-  debugger;
+
   return (
     <div
       style={{
@@ -31,8 +62,8 @@ const Details = ({ control: { id, tag, title } }: Props) => {
     >
       <Popup>
         <h2>{title}</h2>
-        <p>Details...TBD</p>
-        {myObj && <p>Look: {JSON.stringify(myObj)}</p>}
+
+        {myObj?.outputOptions?.length > 0 && <DetailLines lines={myObj?.outputOptions} />}
       </Popup>
     </div>
   );

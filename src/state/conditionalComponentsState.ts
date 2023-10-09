@@ -13,7 +13,7 @@ export type id = number;
  */
 export type tag = string;
 
-type outputOption = {
+export type outputOption = {
   id: string;
   title: string;
   condition: string;
@@ -38,14 +38,13 @@ export type conditionalComponentsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
-const conditionalComponentsState = create((set, get) => ({
+const conditionalComponentsState = create((set, _get) => ({
   /**
    * All dataElements used in the template
    */
   items: [],
 
   loadAll: function () {
-    console.log("dataElementsState.loadAll()");
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Read document
@@ -54,26 +53,39 @@ const conditionalComponentsState = create((set, get) => ({
         await context.sync();
         // 2. Update state
         const all = [];
+
         for (let item of contentControls.items) {
-          console.log("===>", item.id, item.tag, item.title);
-          all.push({ id: item.id, tag: item.tag, title: item.title.replace(/^COND: /, "") });
+          const itemRange = item.getRange("Content");
+          const allOutputOptions = [];
+          const scenarios = itemRange.contentControls.getByTag(TAGNAMES.scenario);
+          item.context.load(scenarios, "items");
+          await context.sync();
+          for (let scenario of scenarios.items) {
+            allOutputOptions.push({ id: scenario.id, title: scenario.title });
+          }
+
+          all.push({
+            id: item.id,
+            tag: item.tag,
+            title: item.title.replace(/^COND: /, ""),
+            outputOptions: allOutputOptions,
+          });
         }
+
         set({ items: all });
         resolve(null);
       });
     });
   },
 
-  getItemById: function () {
-    return this.items[0] ? this.items[0] : undefined;
+  getItemById: function (id) {
+    return this.items.find((item) => item.id === id);
   },
 
   /**
    * Add a dataElement to the template, into the current cursor selection
    */
   insertTag: function (tagName: string, displayName: string) {
-    // eslint-disable-next-line no-debugger
-    debugger;
     return new Promise((resolve) => {
       const defaultCondition = async (
         context: Word.RequestContext,
@@ -86,7 +98,7 @@ const conditionalComponentsState = create((set, get) => ({
           cannotEdit: false,
           cannotDelete: false,
           color: "maroon",
-          tag: "Default",
+          tag: TAGNAMES.scenario,
           title: displayName || "Un-Conditional",
         });
         await context.sync();
@@ -108,10 +120,8 @@ const conditionalComponentsState = create((set, get) => ({
 
         context.load(contentControl);
         await context.sync();
-        const defaultConditionObj = await defaultCondition(context, contentControl.getRange("Content"), displayName);
-        // eslint-disable-next-line no-debugger
-        debugger;
-        console.log("===> Default ID:", defaultConditionObj.id);
+        const defaultTitle = "Default";
+        const defaultConditionObj = await defaultCondition(context, contentControl.getRange("Content"), defaultTitle);
         context.load(contentControl);
         context.sync().then(async () => {
           // 2. Update state
@@ -119,13 +129,8 @@ const conditionalComponentsState = create((set, get) => ({
             id: contentControl.id,
             tag: contentControl.tag,
             title: displayName,
-            outputOptions: [{ id: defaultConditionObj.id, title: "Default", condition: "true" }],
+            outputOptions: [{ id: defaultConditionObj.id, title: defaultTitle, condition: "true" }],
           };
-          const state = get() as conditionalComponentsStateType;
-          const newItems = [...state.items, dataElement];
-          set({
-            items: newItems,
-          });
           await context.sync();
           await this.loadAll();
           resolve(dataElement);
