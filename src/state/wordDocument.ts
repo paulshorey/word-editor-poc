@@ -81,22 +81,13 @@ export const selectAndHightlightItem = async (item: any, context: any): Promise<
   await context.sync();
   // do not scroll to same item - will start an infinite loop!
   if (debounceSelectedTag.id === item.id) return;
-  debounceSelectedTag.id = item.id + "";
+  debounceSelectedTag.id = item.id;
   // if new item, then go ahead and scroll, select, highlight
   item.select("Select");
   item.load("color");
   await context.sync();
-  item.color = "#F5C027";
-  setTimeout(async () => {
-    await context.sync();
-    item.color = "#F5C027";
-    context.sync();
-  }, 100);
-  setTimeout(async () => {
-    await context.sync();
-    item.color = "#08E5FF";
-    context.sync();
-  }, 200);
+  // item.color = "#F5C027";
+  item.color = "#08E5FF";
   setTimeout(async () => {
     await context.sync();
     item.color = "white";

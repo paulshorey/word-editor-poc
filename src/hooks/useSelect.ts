@@ -37,7 +37,9 @@ export default function useSelect() {
       if (!maybeTags) continue;
       for (let maybeTag of maybeTags) {
         // check if it's a tag
-        const contentControl = context.document.contentControls.getByTag(maybeTag).getFirstOrNullObject();
+        const contentControl: Word.ContentControl = context.document.contentControls
+          .getByTag(maybeTag)
+          .getFirstOrNullObject();
         await context.sync();
         if (!contentControl.isNullObject) {
           state.selectedTags.push(maybeTag);
