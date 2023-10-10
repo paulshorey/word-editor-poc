@@ -14,7 +14,7 @@ export default function useSelect() {
     // Get the current selection as a range.
     const selectionRange = context.document.getSelection();
 
-    // State
+    // State -- FOR CONSOLE LOG ONLY -- needs refactor/removed
     const state = {
       selectedParagraphs: [],
       selectedTags: [],
@@ -56,6 +56,7 @@ export default function useSelect() {
         }
       }
     }
+
     if (state.selectedTags.length === 1) {
       state.clickedTag = state.selectedTags[0];
     }
