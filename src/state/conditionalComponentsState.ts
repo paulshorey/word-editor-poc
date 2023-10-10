@@ -29,6 +29,7 @@ export type dataElement = {
 export type conditionalComponentsStateType = {
   items: dataElement[];
   loadAll: () => Promise<Record<id, dataElement>>;
+  insertScenario: (id: id, scenarioName: string, rule: string) => dataElement | undefined;
   getItemById: (id: id) => dataElementType | undefined;
   insertTag: (tagName: string, displayName: string) => dataElement | undefined;
   //
@@ -38,6 +39,19 @@ export type conditionalComponentsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
+const defaultCondition = async (context: Word.RequestContext, contentRange: Word.Range, displayName: string | null) => {
+  const contentControl = contentRange.insertContentControl();
+  contentControl.set({
+    appearance: "Tags",
+    cannotEdit: false,
+    cannotDelete: false,
+    color: "maroon",
+    tag: TAGNAMES.scenario,
+    title: displayName || "Un-Conditional",
+  });
+  await context.sync();
+  return contentControl;
+};
 const conditionalComponentsState = create((set, _get) => ({
   /**
    * All dataElements used in the template
@@ -78,6 +92,24 @@ const conditionalComponentsState = create((set, _get) => ({
     });
   },
 
+  insertScenario: function (id, scenarioName, _rule) {
+    return new Promise((resolve) => {
+      // 1. Insert into document after previous scenarios
+      Word.run(async (context) => {
+        const contentControl = context.document.contentControls.getById(id);
+        context.load(contentControl);
+        await context.sync();
+        await defaultCondition(context, contentControl.getRange("End"), scenarioName);
+        context.load(contentControl);
+
+        context.sync().then(async () => {
+          await this.loadAll();
+          resolve(true);
+        });
+      });
+    });
+  },
+
   getItemById: function (id) {
     return this.items.find((item) => item.id === id);
   },
@@ -87,24 +119,6 @@ const conditionalComponentsState = create((set, _get) => ({
    */
   insertTag: function (tagName: string, displayName: string) {
     return new Promise((resolve) => {
-      const defaultCondition = async (
-        context: Word.RequestContext,
-        contentRange: Word.Range,
-        displayName: string | null
-      ) => {
-        const contentControl = contentRange.insertContentControl();
-        contentControl.set({
-          appearance: "Tags",
-          cannotEdit: false,
-          cannotDelete: false,
-          color: "maroon",
-          tag: TAGNAMES.scenario,
-          title: displayName || "Un-Conditional",
-        });
-        await context.sync();
-        return contentControl;
-      };
-
       // 1. Insert into document
       Word.run(async (context) => {
         const contentRange = context.document.getSelection().getRange();
@@ -121,19 +135,11 @@ const conditionalComponentsState = create((set, _get) => ({
         context.load(contentControl);
         await context.sync();
         const defaultTitle = "Default";
-        const defaultConditionObj = await defaultCondition(context, contentControl.getRange("Content"), defaultTitle);
+        await defaultCondition(context, contentControl.getRange("Content"), defaultTitle);
         context.load(contentControl);
         context.sync().then(async () => {
-          // 2. Update state
-          const dataElement = {
-            id: contentControl.id,
-            tag: contentControl.tag,
-            title: displayName,
-            outputOptions: [{ id: defaultConditionObj.id, title: defaultTitle, condition: "true" }],
-          };
-          await context.sync();
           await this.loadAll();
-          resolve(dataElement);
+          resolve(true);
         });
       });
     });

@@ -1,5 +1,5 @@
-import React from "react";
-import { Popup } from "@fluentui/react";
+import React, { useEffect, useState } from "react";
+import { DefaultButton, Popup, TextField } from "@fluentui/react";
 import conditionalComponentsState, {
   conditionalComponentsStateType,
   dataElement,
@@ -45,10 +45,17 @@ type DetailProps = {
 };
 
 const Details = ({ control: { id, title } }: DetailProps) => {
+  const [newRule, setNewRule] = useState("FALSE");
+  const [newScenarioName, setNewScenarioName] = useState("");
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
-  const myObj = conditionalComponents.getItemById(id);
+  const currentConditionalComponent = conditionalComponents.getItemById(id);
+  const SCENARIO_PLACEHOLDER = `Scenario_${currentConditionalComponent?.outputOptions?.length}`;
+
+  useEffect(() => {
+    setNewScenarioName(SCENARIO_PLACEHOLDER);
+  }, [currentConditionalComponent?.outputOptions?.length]);
 
   return (
     <div
@@ -63,7 +70,46 @@ const Details = ({ control: { id, title } }: DetailProps) => {
       <Popup>
         <h2>{title}</h2>
 
-        {myObj?.outputOptions?.length > 0 && <DetailLines lines={myObj?.outputOptions} />}
+        {currentConditionalComponent?.outputOptions?.length > 0 && (
+          <DetailLines lines={currentConditionalComponent?.outputOptions} />
+        )}
+
+        <hr />
+
+        <div style={{ display: "flex", gap: "4px", margin: "8px 0", flexDirection: "column" }}>
+          <TextField
+            value={newScenarioName}
+            className="faf-fieldgroup-input"
+            onChange={(_e, value) => {
+              setNewScenarioName(value);
+            }}
+            placeholder={SCENARIO_PLACEHOLDER}
+          ></TextField>
+
+          <TextField
+            value={newRule}
+            className="faf-fieldgroup-input"
+            onKeyDown={(e) => {
+              if (e.key.length > 1) return;
+            }}
+            onChange={(_e, value) => {
+              setNewRule(value);
+            }}
+            placeholder="RULE"
+          />
+
+          <div style={{ display: "flex", justifyContent: "space-around", margin: "8px 0" }}>
+            <DefaultButton
+              className="faf-fieldgroup-button"
+              iconProps={{ iconName: "ChevronRight" }}
+              onClick={() => {
+                conditionalComponents.insertScenario(id, newScenarioName, newRule);
+              }}
+            >
+              Add
+            </DefaultButton>
+          </div>
+        </div>
       </Popup>
     </div>
   );
