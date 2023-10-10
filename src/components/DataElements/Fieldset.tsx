@@ -1,7 +1,7 @@
 /* global console */
 import React from "react";
 import { TextField, Stack, IconButton } from "@fluentui/react";
-import dataElementsState, { dataElementsStateType, dataElement } from "@src/state/dataElements";
+import dataElementsState, { dataElementsStateType, dataElement } from "@src/state/dataElementsState";
 import * as wordDocument from "@src/state/wordDocument";
 
 type Props = {
