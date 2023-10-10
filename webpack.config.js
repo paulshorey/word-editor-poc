@@ -7,7 +7,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = "https://www.firstam.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -67,6 +67,10 @@ module.exports = async (env, options) => {
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
+          {
+            from: "public/assets/*",
+            to: "assets/[name][ext][query]",
+          },
           {
             from: "manifest*.xml",
             to: "[name]" + "[ext]",
