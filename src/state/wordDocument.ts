@@ -60,16 +60,46 @@ export const scrollToId = (id: id): Promise<void> => {
     Word.run(async (context) => {
       // 1. Scroll to item
       const item = context.document.contentControls.getById(id);
-      await context.sync();
-      item.select("End");
-      item.load("id");
-      item.font.highlightColor = ""; // "KHAKI"
-      await context.sync();
+      await selectAndHightlightItem(item, context);
       // 2. Update state
       state.update((state) => {
+        // Loading id and context.sync in selectAndHightlightItem()
+        // eslint-disable-next-line office-addins/call-sync-before-read
         state.selectedTag = item.id + "";
       });
       resolve();
     });
   });
+};
+
+const debounceSelectedTag = {
+  id: "",
+};
+
+export const selectAndHightlightItem = async (item: any, context: any): Promise<void> => {
+  item.load("id");
+  await context.sync();
+  // do not scroll to same item - will start an infinite loop!
+  if (debounceSelectedTag.id === item.id) return;
+  debounceSelectedTag.id = item.id + "";
+  // if new item, then go ahead and scroll, select, highlight
+  item.select("Select");
+  item.load("color");
+  await context.sync();
+  item.color = "#F5C027";
+  setTimeout(async () => {
+    await context.sync();
+    item.color = "#F5C027";
+    context.sync();
+  }, 100);
+  setTimeout(async () => {
+    await context.sync();
+    item.color = "#08E5FF";
+    context.sync();
+  }, 200);
+  setTimeout(async () => {
+    await context.sync();
+    item.color = "white";
+    context.sync();
+  }, 1000);
 };

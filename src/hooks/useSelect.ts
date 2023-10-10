@@ -2,6 +2,7 @@
 /* global console, Word, require */
 import { logClear } from "@src/lib/log";
 import * as wordDocument from "@src/state/wordDocument";
+import { selectAndHightlightItem } from "@src/state/wordDocument";
 
 /**
  * Watch for a click on a content control. Interact with it in the app state.
@@ -52,6 +53,7 @@ export default function useSelect() {
         switch (contentControl.title) {
           case ":":
             wordDocument.setSelectedTag(maybeTag);
+            await selectAndHightlightItem(contentControl, context);
             break;
         }
       }

@@ -30,7 +30,7 @@ export type dataElementsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
-const dataElementsState = create((set, get) => ({
+const dataElementsState = create((set, _get) => ({
   /**
    * All dataElements used in the template
    */
@@ -56,16 +56,8 @@ const dataElementsState = create((set, get) => ({
         contentControl.cannotEdit = true;
         context.sync().then(async () => {
           // 2. Update state
-          const dataElement = {
-            id: contentControl.id,
-            tag: contentControl.tag,
-          };
-          const state = get() as dataElementsStateType;
-          set({
-            items: [dataElement, ...state.items],
-          });
-          await context.sync();
-          resolve(dataElement);
+          const all = await this.loadAll();
+          resolve(all);
         });
       });
     });
