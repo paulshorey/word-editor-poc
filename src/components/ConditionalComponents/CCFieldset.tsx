@@ -10,9 +10,10 @@ import Details from "@src/components/ConditionalComponents/Details";
 
 type Props = {
   control: dataElement;
+  selectedTag: string;
 };
 
-const CCFieldset = ({ control }: Props) => {
+const CCFieldset = ({ control, selectedTag }: Props) => {
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
@@ -20,15 +21,26 @@ const CCFieldset = ({ control }: Props) => {
   const [rotation, setRotation] = useState("rotate(0deg)");
   const [isOpen, setIsOpen] = useState(false);
 
+  let selectedStyles = {};
+  if (control.tag === selectedTag) {
+    selectedStyles = {
+      background: "#90b4d1",
+      borderRadius: "5px",
+    };
+  }
+
   useEffect(() => {
     setRotation(`rotate(${isOpen ? 180 : 0}deg)`);
   }, [isOpen]);
 
   return (
     <div>
-      <Stack horizontal style={{ width: "100%", justifyContent: "space-between", margin: "2px 0" }}>
+      <Stack horizontal style={{ ...selectedStyles, width: "100%", justifyContent: "space-between", margin: "2px 0" }}>
         <Stack horizontal wrap>
           <TextField
+            onFocus={() => {
+              wordDocument.scrollToId(control.id);
+            }}
             style={{
               flexGrow: "1",
             }}
@@ -55,14 +67,14 @@ const CCFieldset = ({ control }: Props) => {
             />
           </div>
         </Stack>
-        <IconButton
-          iconProps={{ iconName: "BullseyeTarget" }}
-          title="Emoji"
-          ariaLabel="Emoji"
-          onClick={() => {
-            wordDocument.scrollToId(control.id);
-          }}
-        />
+        {/*<IconButton*/}
+        {/*  iconProps={{ iconName: "BullseyeTarget" }}*/}
+        {/*  title="Emoji"*/}
+        {/*  ariaLabel="Emoji"*/}
+        {/*  onClick={() => {*/}
+        {/*    wordDocument.scrollToId(control.id);*/}
+        {/*  }}*/}
+        {/*/>*/}
         <IconButton
           iconProps={{ iconName: "ChromeClose" }}
           title="Emoji"

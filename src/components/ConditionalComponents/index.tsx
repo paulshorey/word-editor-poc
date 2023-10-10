@@ -3,11 +3,17 @@ import CCFieldset from "@src/components/ConditionalComponents/CCFieldset";
 import AddConditionalComponent from "./AddConditionalComponent";
 import { Stack } from "@fluentui/react";
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
+import * as wordDocument from "@src/state/wordDocument";
 
 const ViewConditionalComponents = () => {
   const conditionalComponents: conditionalComponentsStateType = conditionalComponentsState(
     (state) => state as conditionalComponentsStateType
   );
+  const [selectedTag, setSelectedTag] = React.useState("");
+  wordDocument.state.subscribe((state) => {
+    setSelectedTag(state.selectedTag);
+  });
+
   return (
     <div style={{ margin: "0 5px 10px" }}>
       <Stack
@@ -18,7 +24,9 @@ const ViewConditionalComponents = () => {
         <button onClick={conditionalComponents?.loadAll}>reload</button>
       </Stack>
       <AddConditionalComponent />
-      {conditionalComponents.items.map((control) => <CCFieldset key={control.id} control={control} />) || (
+      {conditionalComponents.items.map((control) => (
+        <CCFieldset key={control.id} control={control} selectedTag={selectedTag} />
+      )) || (
         <div>
           <code>None</code>
         </div>

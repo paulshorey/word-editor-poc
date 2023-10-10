@@ -3,9 +3,15 @@ import ComponentFieldset from "@src/components/Components/ComponentFieldset";
 import AddComponent from "@src/components/Components/AddComponent";
 import { Stack } from "@fluentui/react";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
+import * as wordDocument from "@src/state/wordDocument";
 
 const ViewComponents = () => {
   const components: componentsStateType = componentsState((state) => state as componentsStateType);
+  const [selectedTag, setSelectedTag] = React.useState("");
+  wordDocument.state.subscribe((state) => {
+    setSelectedTag(state.selectedTag);
+  });
+
   return (
     <div style={{ margin: "0 5px 10px" }}>
       <Stack
@@ -17,7 +23,9 @@ const ViewComponents = () => {
       </Stack>
       <AddComponent />
       {(components.items.length > 0 &&
-        components.items.map((control) => <ComponentFieldset key={control.id} control={control} />)) || (
+        components.items.map((control) => (
+          <ComponentFieldset key={control.id} control={control} selectedTag={selectedTag} />
+        ))) || (
         <div>
           <code>None</code>
         </div>

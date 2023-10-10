@@ -7,17 +7,29 @@ import componentsState, { componentsStateType } from "@src/state/componentsState
 
 type Props = {
   control: dataElement;
+  selectedTag: string;
 };
 
-const ComponentFieldset = ({ control }: Props) => {
+const ComponentFieldset = ({ control, selectedTag }: Props) => {
   const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const [tag, setTag] = React.useState(control.title);
+  let selectedStyles = {};
+  if (control.tag === selectedTag) {
+    selectedStyles = {
+      background: "#90b4d1",
+      borderRadius: "5px",
+    };
+  }
+
   return (
-    <Stack horizontal style={{ width: "100%", justifyContent: "space-between" }}>
+    <Stack horizontal style={{ ...selectedStyles, width: "100%", justifyContent: "space-between" }}>
       <Stack horizontal wrap>
         <TextField
           style={{
             flexGrow: "1",
+          }}
+          onFocus={() => {
+            wordDocument.scrollToId(control.id);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -39,14 +51,14 @@ const ComponentFieldset = ({ control }: Props) => {
           }}
         />
       </Stack>
-      <IconButton
-        iconProps={{ iconName: "BullseyeTarget" }}
-        title="Emoji"
-        ariaLabel="Emoji"
-        onClick={() => {
-          wordDocument.scrollToId(control.id);
-        }}
-      />
+      {/*<IconButton*/}
+      {/*  iconProps={{ iconName: "BullseyeTarget" }}*/}
+      {/*  title="Emoji"*/}
+      {/*  ariaLabel="Emoji"*/}
+      {/*  onClick={() => {*/}
+      {/*    wordDocument.scrollToId(control.id);*/}
+      {/*  }}*/}
+      {/*/>*/}
       <IconButton
         iconProps={{ iconName: "ChromeClose" }}
         title="Emoji"
