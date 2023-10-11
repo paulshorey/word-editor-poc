@@ -67,3 +67,11 @@ button:hover {
 .faf-isNotDeletable {
   background-color: red;
 }
+
+/*================= EXPERIMENTAL ================*/
+
+.highlightedDataElement {
+  background: yellow;
+  color: red;
+  border: solid 1px orange;
+}
