@@ -134,9 +134,13 @@ const conditionalComponentsState = create((set, _get) => ({
           tag: tagName,
           title: `${displayName} Condition`,
         });
-        await context.sync();
         contentControl.load("insertText");
+        contentControl.load("insertHtml");
+        await context.sync();
         contentControl.insertText(" ", "Replace");
+        context.load(contentControl);
+        contentControl.getRange("Before").insertHtml("<br />", "Start");
+        contentControl.getRange("After").insertHtml("<br />", "Start");
         context.load(contentControl);
         await context.sync();
         await this.insertScenario(contentControl.id, "Default", "");

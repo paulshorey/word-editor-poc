@@ -66,61 +66,48 @@ const componentsState = create((set, get) => ({
    */
   insertTag: function (documentName: string) {
     return new Promise((resolve) => {
-      let base64DataContent;
-      switch (documentName) {
-        case "comp_with_table":
-          base64DataContent = ComponentTestData.comp_with_table.data;
-          break;
-
-        case "comp_simple_word":
-          base64DataContent = ComponentTestData.comp_simple_word.data;
-          break;
-
-        default:
-          Promise.reject("ERROR - Document does not exist");
-          return;
-      }
-
-      // 1. Insert into document
       Word.run(async (context) => {
+        // 0. Get base64 data content
+        let base64DataContent;
+        switch (documentName) {
+          case "comp_with_table":
+            base64DataContent = ComponentTestData.comp_with_table.data;
+            break;
+
+          case "comp_simple_word":
+            base64DataContent = ComponentTestData.comp_simple_word.data;
+            break;
+
+          default:
+            Promise.reject("ERROR - Document does not exist");
+            return;
+        }
+        // 1. Insert into document
         const contentRange = context.document.getSelection().getRange();
         const contentControl = contentRange.insertContentControl();
         contentControl.set({
-          appearance: "Tags",
-          cannotEdit: false,
-          cannotDelete: false,
-          color: "purple",
           tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
           title: documentName.toUpperCase(),
         });
+        await context.sync();
+        contentControl.load("insertFileFromBase64");
+        await context.sync();
+        contentControl.insertFileFromBase64(base64DataContent, "Replace");
+        await context.sync();
 
-        context.load(contentControl);
-        // eslint-disable-next-line no-undef
-        console.log("===> 1");
-
-        contentControl.insertFileFromBase64(base64DataContent, "Start"); // .load()
-        // eslint-disable-next-line no-undef
-        console.log("===> 2A");
-        // context.document.load();
-        await context.sync(() => {
-          // eslint-disable-next-line no-undef
-          console.log("===> 2B");
+        // 2. Update state
+        const dataElement: dataElementType = {
+          id: contentControl.id,
+          tag: contentControl.tag,
+          title: documentName.toUpperCase(),
+        };
+        const state = get() as componentsStateType;
+        set({
+          items: [dataElement, ...state.items],
         });
-        context.sync().then(async () => {
-          // 2. Update state
-          const dataElement: dataElementType = {
-            id: contentControl.id,
-            tag: contentControl.tag,
-            title: documentName.toUpperCase(),
-          };
-          const state = get() as componentsStateType;
-          set({
-            items: [dataElement, ...state.items],
-          });
-          await context.sync();
-          await this.loadAll();
-          resolve(dataElement);
-        });
+        await context.sync();
+        await this.loadAll();
+        resolve(dataElement);
       });
     });
   },
