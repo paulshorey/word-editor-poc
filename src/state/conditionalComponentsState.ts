@@ -39,6 +39,19 @@ export type conditionalComponentsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
+const defaultCondition = async (context: Word.RequestContext, contentRange: Word.Range, displayName: string | null) => {
+  const childContentControl = contentRange.insertContentControl();
+  childContentControl.set({
+    appearance: "Tags",
+    cannotEdit: false,
+    cannotDelete: false,
+    color: "maroon",
+    tag: TAGNAMES.scenario,
+    title: displayName || "Un-Conditional",
+  });
+  await context.sync();
+  return childContentControl;
+};
 const conditionalComponentsState = create((set, _get) => ({
   /**
    * All dataElements used in the template
@@ -81,30 +94,13 @@ const conditionalComponentsState = create((set, _get) => ({
 
   insertScenario: function (id, scenarioName, _rule) {
     return new Promise((resolve) => {
+      // 1. Insert into document after previous scenarios
       Word.run(async (context) => {
-        // 1. Insert into document after previous scenarios
-        const parent = context.document.contentControls.getById(id);
-        context.load(parent);
+        const contentControl = context.document.contentControls.getById(id);
+        context.load(contentControl);
         await context.sync();
-        // await defaultCondition(context, contentControl.getRange("End"), scenarioName);
-
-        const child = parent.getRange("End").insertContentControl();
-        child.set({
-          appearance: "Tags",
-          cannotEdit: false,
-          cannotDelete: false,
-          color: "maroon",
-          tag: TAGNAMES.scenario,
-          title: (scenarioName || "Unconditional") + " Scenario",
-        });
-        await context.sync();
-        child.insertText(
-          (scenarioName || "Unconditional") + " Scenario text. Click and edit this content...",
-          "Replace"
-        );
-        await context.sync();
-
-        context.load(parent);
+        await defaultCondition(context, contentControl.getRange("End"), scenarioName);
+        context.load(contentControl);
 
         context.sync().then(async () => {
           await this.loadAll();
@@ -119,35 +115,37 @@ const conditionalComponentsState = create((set, _get) => ({
   },
 
   /**
-   * Add a conditionalComponent to the template, into the current cursor selection
+   * Add a dataElement to the template, into the current cursor selection
    */
   insertTag: function (tagName: string, displayName: string) {
     return new Promise((resolve) => {
+      // 1. Insert into document
       Word.run(async (context) => {
         const contentRange = context.document.getSelection().getRange();
         const contentControl = contentRange.insertContentControl();
         contentControl.set({
-          appearance: "BoundingBox",
+          appearance: "Tags",
           cannotEdit: false,
           cannotDelete: false,
           color: "blue",
           tag: tagName,
-          title: `${displayName} Condition`,
+          title: `COND: ${displayName}`,
         });
-        contentControl.load("insertText");
-        contentControl.load("insertHtml");
-        await context.sync();
-        contentControl.insertText(" ", "Replace");
-        context.load(contentControl);
-        contentControl.getRange("Before").insertHtml("<br />", "Start");
-        contentControl.getRange("After").insertHtml("<br />", "Start");
+
         context.load(contentControl);
         await context.sync();
-        await this.insertScenario(contentControl.id, "Default", "");
+        const defaultTitle = "Default";
+        contentControl.insertText(" ", "Start");
         context.load(contentControl);
-        await contentControl.context.sync();
-        await this.loadAll();
-        resolve(true);
+        await context.sync();
+
+        context.load(contentControl);
+        await defaultCondition(context, contentControl.getRange("End"), defaultTitle);
+        context.load(contentControl);
+        context.sync().then(async () => {
+          await this.loadAll();
+          resolve(true);
+        });
       });
     });
   },
