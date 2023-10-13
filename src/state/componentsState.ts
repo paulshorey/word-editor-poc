@@ -93,8 +93,35 @@ const componentsState = create((set, get) => ({
         contentControl.load("insertFileFromBase64");
         await context.sync();
         contentControl.insertFileFromBase64(base64DataContent, "Replace");
-        await context.sync();
+        context
+          .sync()
+          .then((res) => {
+            // eslint-disable-next-line no-undef
+            console.log("===> RES:", res);
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-undef
+            console.log("===> Error", error);
+          });
 
+        const TIMEOUT = 2000;
+        setTimeout(() => {
+          // eslint-disable-next-line no-undef
+          console.log("===> RESET page", TIMEOUT);
+          const body = context.document.body;
+          body.load();
+
+          context
+            .sync()
+            .then(() => {
+              // eslint-disable-next-line no-undef
+              console.log("===> RELOAD", TIMEOUT);
+            })
+            .catch((error) => {
+              // eslint-disable-next-line no-undef
+              console.log("===> Error Clear", error);
+            });
+        }, TIMEOUT);
         // 2. Update state
         const dataElement: dataElementType = {
           id: contentControl.id,
