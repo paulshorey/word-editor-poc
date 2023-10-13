@@ -1,5 +1,5 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
-/* global setTimeout, Office, document, Word, require */
+/* global console, window, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
 import { TAGNAMES } from "@src/constants/constants";
 import { ComponentTestData } from "@src/testdata/TestData";
@@ -37,7 +37,7 @@ export type componentsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
-const componentsState = create((set, get) => ({
+const componentsState = create((set, _get) => ({
   /**
    * All dataElements used in the template
    */
@@ -67,75 +67,139 @@ const componentsState = create((set, get) => ({
   insertTag: function (documentName: string) {
     return new Promise((resolve) => {
       Word.run(async (context) => {
-        // 0. Get base64 data content
-        let base64DataContent;
+        const contentRange = context.document.getSelection().getRange("Content");
+        const contentControl = contentRange.insertContentControl();
+        contentControl.set({
+          tag: TAGNAMES.component,
+          title: documentName.toUpperCase(),
+        });
+        await context.sync();
+
         switch (documentName) {
+          case "helloworld_base64_plainText":
+            {
+              contentControl.load("insertFileFromBase64");
+              await context.sync();
+              await contentControl.context.sync();
+              contentControl.insertFileFromBase64(ComponentTestData.helloworld_base64_plainText.data, "End");
+            }
+            break;
+
+          case "helloworld_base64_dataURI":
+            {
+              contentControl.load("insertFileFromBase64");
+              await context.sync();
+              await contentControl.context.sync();
+              contentControl.insertFileFromBase64(ComponentTestData.helloworld_base64_dataURI.data, "Replace");
+            }
+            break;
+
+          case "helloworld_base64_xml":
+            {
+              contentControl.load("insertOoxml");
+              await context.sync();
+              await contentControl.context.sync();
+              contentControl.insertOoxml(ComponentTestData.helloworld_base64_xml.data, "Replace");
+            }
+            break;
+
+          case "helloworld_xml":
+            {
+              contentControl.load("insertOoxml");
+              await contentControl.context.sync();
+              await context.sync();
+              contentControl.insertOoxml(ComponentTestData.helloworld_xml.data, "Replace");
+            }
+            break;
+
           case "comp_with_table":
-            base64DataContent = ComponentTestData.comp_with_table.data;
+            {
+              contentControl.load("insertFileFromBase64");
+              await contentControl.context.sync();
+              await context.sync();
+              contentControl.insertFileFromBase64(ComponentTestData.comp_with_table.data, "Replace");
+            }
             break;
 
           case "comp_simple_word":
-            base64DataContent = ComponentTestData.comp_simple_word.data;
+            {
+              contentControl.load("insertFileFromBase64");
+              await contentControl.context.sync();
+              await context.sync();
+              contentControl.insertFileFromBase64(ComponentTestData.comp_simple_word.data, "Replace");
+            }
             break;
 
           default:
             Promise.reject("ERROR - Document does not exist");
             return;
         }
-        // 1. Insert into document
-        const contentRange = context.document.getSelection().getRange();
-        const contentControl = contentRange.insertContentControl();
-        contentControl.set({
-          tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
-          title: documentName.toUpperCase(),
-        });
+        await contentControl.context.sync();
         await context.sync();
-        contentControl.load("insertFileFromBase64");
-        await context.sync();
-        contentControl.insertFileFromBase64(base64DataContent, "Replace");
+
+        context.document.body.load();
+        // await context.sync();
         context
           .sync()
-          .then((res) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> RES:", res);
+          .then(() => {
+            console.log("context.sync() SUCCESS");
           })
           .catch((error) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> Error", error);
+            console.error("context.sync() ERROR", error);
           });
 
-        const TIMEOUT = 2000;
-        setTimeout(() => {
-          // eslint-disable-next-line no-undef
-          console.log("===> RESET page", TIMEOUT);
-          const body = context.document.body;
-          body.load();
-
-          context
-            .sync()
-            .then(() => {
-              // eslint-disable-next-line no-undef
-              console.log("===> RELOAD", TIMEOUT);
-            })
-            .catch((error) => {
-              // eslint-disable-next-line no-undef
-              console.log("===> Error Clear", error);
-            });
-        }, TIMEOUT);
-        // 2. Update state
-        const dataElement: dataElementType = {
-          id: contentControl.id,
-          tag: contentControl.tag,
-          title: documentName.toUpperCase(),
-        };
-        const state = get() as componentsStateType;
-        set({
-          items: [dataElement, ...state.items],
-        });
-        await context.sync();
-        await this.loadAll();
-        resolve(dataElement);
+        resolve(true);
+        return;
       });
+
+      setTimeout(async () => {
+        Word.run(async (context) => {
+          try {
+            const after = context.document.getSelection().getRange("Content").getRange("After");
+            await context.sync();
+            after.load("insertHtml");
+            // await context.sync();
+            // after.insertHtml("<br />", "Start");
+            await context.sync();
+            after.insertHtml("<br />", "End");
+            await context.sync();
+
+            context.document.body.load();
+
+            await context.sync();
+          } catch (error) {
+            console.error("try catch in componentState insertTag", error);
+          }
+        });
+      }, 5000);
+
+      // window.location.reload();
+      // setTimeout(async () => {
+      //   Word.run(async (context) => {
+      //     const contentRange = context.document.getSelection().getRange("Start");
+      //     await context.sync();
+      //     const after = contentRange.getRange("After").insertContentControl();
+      //     await context.sync();
+      //     after.load("insertHtml");
+      //     await context.sync();
+      //     after.insertHtml("<br />", "Start");
+      //     await context.sync();
+      //     after.insertHtml("<br />", "End");
+      //     await context.sync();
+      //   });
+      // }, 2000);
+      // setTimeout(async () => {
+      //   Word.run(async (context) => {
+      //     const contentRange = context.document.getSelection().getRange("Start");
+      //     await context.sync();
+      //     const after = contentRange.getRange("After").insertContentControl();
+      //     await context.sync();
+      //     after.load("insertHtml");
+      //     await context.sync();
+      //     after.insertHtml("<br />", "End");
+      //     await context.sync();
+      //   });
+      // }, 4000);
     });
   },
 
