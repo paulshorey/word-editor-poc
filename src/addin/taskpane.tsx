@@ -4,9 +4,10 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import useSelect from "@src/hooks/useSelect";
+import handleDocxClick from "@src/helpers/handleDocxClick";
 
-/* global document, Word, Office, module, require */
+/* global OfficeExtension, document, Word, Office, module, require */
+OfficeExtension.config.extendedErrorLogging = true;
 
 initializeIcons();
 // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
@@ -34,7 +35,10 @@ Office.onReady(() => {
   isOfficeInitialized = true;
   render(App);
   if (isOfficeInitialized) {
-    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, useSelect);
+    Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+    Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+    Office.context.document.settings.saveAsync();
+    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, handleDocxClick);
   }
 });
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DefaultButton } from "@fluentui/react";
 
 import { contextLoad } from "@src/lib/commandUtils";
+import { TAGNAMES } from "@src/constants/constants";
 /* global Word, require */
 
 const handleClick = (tagName: string, isDeletable: boolean) => {
@@ -31,7 +32,7 @@ const handleClick = (tagName: string, isDeletable: boolean) => {
 interface ToggleCCDeletableInterface {
   tagName?: string;
 }
-const ToggleCCDeletable = ({ tagName }: ToggleCCDeletableInterface) => {
+const ToggleCCDeletable = ({ tagName = TAGNAMES.component }: ToggleCCDeletableInterface) => {
   tagName = tagName || "CC_TAG";
   const [deletable, setDeletable] = useState<boolean>(true);
   const [toggleStyle, setToggleStyle] = useState("faf-isDeletable");

@@ -16,8 +16,10 @@ const AddComponent = () => {
         onChange={(value) => setLoadDocument(value.target.value)}
       >
         <option value="NO_PICK">Pick a Document</option>
-        <option value="comp_simple_word">Simple Document</option>
-        <option value="comp_with_table">Complex Document</option>
+        <option value="comp_simple_word">Simple text</option>
+        <option value="comp_with_table">With table</option>
+        <option value="poc2">Long POC2</option>
+        <option value="don1">Don{"'"}s template</option>
       </select>
       <DefaultButton
         className="faf-fieldgroup-button"
