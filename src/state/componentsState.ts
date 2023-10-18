@@ -5,7 +5,7 @@ import { TAGNAMES } from "@src/constants/constants";
 import { ComponentTestData } from "@src/testdata/TestData";
 import Poc2 from "@src/testdata/Poc2";
 import Don1 from "@src/testdata/Don1";
-import DummyXml from "@src/testdata/DummyXml";
+import DummyXml from "@src/testdata/DummyXmlTag";
 import DummyXmlContent from "@src/testdata/DummyXmlContent";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -74,25 +74,28 @@ const componentsState = create((set, _get) => ({
   insertTag: function (documentName: string): void {
     Word.run(async (context) => {
       // 0. Get base64 data content
-      let base64DataContent;
+      let isXML = false;
+      let contentToInsert;
       switch (documentName) {
         case "comp_with_table":
-          base64DataContent = ComponentTestData.comp_with_table.data;
+          contentToInsert = ComponentTestData.comp_with_table.data;
           break;
         case "comp_simple_word":
-          base64DataContent = ComponentTestData.comp_simple_word.data;
+          contentToInsert = ComponentTestData.comp_simple_word.data;
           break;
         case "poc2":
-          base64DataContent = Poc2;
+          contentToInsert = Poc2;
           break;
         case "don1":
-          base64DataContent = Don1;
+          contentToInsert = Don1;
           break;
         case "DummyXml":
-          base64DataContent = DummyXml;
+          isXML = true;
+          contentToInsert = DummyXml;
           break;
         case "DummyXmlContent":
-          base64DataContent = DummyXmlContent;
+          isXML = true;
+          contentToInsert = DummyXmlContent;
           break;
         default:
           Promise.reject("ERROR - Document does not exist");
@@ -107,7 +110,9 @@ const componentsState = create((set, _get) => ({
       contentControl.title = documentName.toUpperCase();
       contentControl.insertHtml("<div>Loading component content...</div>", "Start");
       await context.sync();
-      const range = contentControl.insertFileFromBase64(base64DataContent, "Replace");
+      const range = isXML
+        ? contentControl.insertOoxml(contentToInsert, "Replace")
+        : contentControl.insertFileFromBase64(contentToInsert, "Replace");
       // contentControl.cannotEdit = true;
       await range.context.sync();
       await context.sync();
