@@ -5,6 +5,8 @@ import { TAGNAMES } from "@src/constants/constants";
 import { ComponentTestData } from "@src/testdata/TestData";
 import Poc2 from "@src/testdata/Poc2";
 import Don1 from "@src/testdata/Don1";
+import DummyXml from "@src/testdata/DummyXml";
+import DummyXmlContent from "@src/testdata/DummyXmlContent";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -12,6 +14,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * contentControl.id; context.document.contentControls.getById(id)
  */
 export type id = number;
+
 /**
  * contentControl.tag; context.document.contentControls.getByTag(tag);
  */
@@ -84,6 +87,12 @@ const componentsState = create((set, _get) => ({
           break;
         case "don1":
           base64DataContent = Don1;
+          break;
+        case "DummyXml":
+          base64DataContent = DummyXml;
+          break;
+        case "DummyXmlContent":
+          base64DataContent = DummyXmlContent;
           break;
         default:
           Promise.reject("ERROR - Document does not exist");

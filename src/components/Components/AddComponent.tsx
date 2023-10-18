@@ -18,6 +18,8 @@ const AddComponent = () => {
         <option value="NO_PICK">Pick a Document</option>
         <option value="comp_simple_word">Simple text</option>
         <option value="comp_with_table">With table</option>
+        <option value="DummyXml">XML with tag</option>
+        <option value="DummyXmlContent">XML without tag</option>
         <option value="poc2">Long POC2</option>
         <option value="don1">Don{"'"}s template</option>
       </select>
