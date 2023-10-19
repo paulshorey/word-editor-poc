@@ -5,6 +5,7 @@ import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
 import AddContentControl from "@src/components/commands/AddContentControl";
 import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
 import DataElements from "@src/components/DataElements";
+import CustomComponent from "@src/components/Components/CustomString";
 import PrepareCC4Save from "@src/components/commands/DeleteFirstComponent";
 import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent";
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElementsState";
@@ -48,6 +49,8 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <Components />
       <hr />
       <ConditionalComponents />
+      <hr />
+      <CustomComponent />
       <hr />
 
       <GetFirstParagraph />
