@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { TAGNAMES } from "@src/constants/constants";
 import { ComponentTestData } from "@src/testdata/TestData";
+import Don1 from "@src/testdata/Don1";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -76,6 +77,10 @@ const componentsState = create((set, _get) => ({
 
           case "comp_simple_word":
             base64DataContent = ComponentTestData.comp_simple_word.data;
+            break;
+
+          case "don1":
+            base64DataContent = Don1;
             break;
 
           default:

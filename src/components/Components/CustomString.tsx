@@ -1,20 +1,29 @@
 import React, { useState } from "react";
 import { DefaultButton, Stack, TextField } from "@fluentui/react";
-import componentsState, { componentsStateType } from "@src/state/componentsState";
+// import componentsState, { componentsStateType } from "@src/state/componentsState";
 
 /* global console, Word, require */
 
 const AddComponent = () => {
-  const components: componentsStateType = componentsState((state) => state as componentsStateType);
+  // const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const [documentContent, set_documentContent] = useState("");
   return (
     <Stack className="faf-fieldgroup">
-      <textarea defaultValue="" onChange={console.log} placeholder="Insert OOXML or BASE64"></textarea>
+      <textarea
+        defaultValue=""
+        onChange={(e) => {
+          set_documentContent(e.target.value);
+        }}
+        placeholder="Insert OOXML or BASE64"
+      ></textarea>
       <Stack horizontal style={{ justifyContent: "space-between", margin: "0 15px 0 5px" }}>
         <DefaultButton
           className="faf-fieldgroup-button"
           style={{ whiteSpace: "nowrap", border: "none" }}
           iconProps={{ iconName: "ChevronRight" }}
+          onClick={() => {
+            insertString(documentContent);
+          }}
         >
           Insert XML
         </DefaultButton>
@@ -22,6 +31,9 @@ const AddComponent = () => {
           className="faf-fieldgroup-button"
           style={{ whiteSpace: "nowrap", border: "none" }}
           iconProps={{ iconName: "ChevronRight" }}
+          onClick={() => {
+            insertString(documentContent, true);
+          }}
         >
           Insert Base64
         </DefaultButton>
@@ -33,7 +45,7 @@ const AddComponent = () => {
 export default AddComponent;
 
 import { TAGNAMES } from "@src/constants/constants";
-function insertXML(contentToInsert, isXML = false) {
+function insertString(contentToInsert, isXML = false) {
   const documentName = "COMP_" + Date.now();
   Word.run(async (context) => {
     const contentRange = context.document.getSelection().getRange("Content");
