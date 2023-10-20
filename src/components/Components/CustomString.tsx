@@ -74,7 +74,6 @@ function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64
     if (type === "data") {
       contentControl.select();
       await asyncFunctionWithCallback(Office.context.document.setSelectedDataAsync, [contentToInsert]);
-      await context.sync();
     } else if (type === "xml") {
       contentControl.load("insertOoxml");
       await context.sync();
