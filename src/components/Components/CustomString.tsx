@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { DefaultButton, Stack, TextField } from "@fluentui/react";
 // import componentsState, { componentsStateType } from "@src/state/componentsState";
 
-/* global console, Word, require */
+const asyncFunctionWithCallback = function (func, args) {
+  return new Promise((resolve, reject) => {
+    func.apply(null, [...args, (err, result) => (err ? reject(err) : resolve(result))]);
+  });
+};
+
+/* global Office, console, Word, require */
 
 const AddComponent = () => {
   // const components: componentsStateType = componentsState((state) => state as componentsStateType);
@@ -14,28 +20,35 @@ const AddComponent = () => {
         onChange={(e) => {
           set_documentContent(e.target.value);
         }}
-        placeholder="Insert OOXML or BASE64"
+        placeholder="Insert string"
       ></textarea>
       <Stack horizontal style={{ justifyContent: "space-between", margin: "0 15px 0 5px" }}>
         <DefaultButton
           className="faf-fieldgroup-button"
           style={{ whiteSpace: "nowrap", border: "none" }}
-          iconProps={{ iconName: "ChevronRight" }}
           onClick={() => {
-            insertString(documentContent);
+            insertString(documentContent, "xml");
           }}
         >
-          Insert XML
+          XML
         </DefaultButton>
         <DefaultButton
           className="faf-fieldgroup-button"
           style={{ whiteSpace: "nowrap", border: "none" }}
-          iconProps={{ iconName: "ChevronRight" }}
           onClick={() => {
-            insertString(documentContent, true);
+            insertString(documentContent, "base64");
           }}
         >
-          Insert Base64
+          Base64
+        </DefaultButton>
+        <DefaultButton
+          className="faf-fieldgroup-button"
+          style={{ whiteSpace: "nowrap", border: "none" }}
+          onClick={() => {
+            insertString(documentContent, "data");
+          }}
+        >
+          dataAsync
         </DefaultButton>
       </Stack>
     </Stack>
@@ -45,10 +58,11 @@ const AddComponent = () => {
 export default AddComponent;
 
 import { TAGNAMES } from "@src/constants/constants";
-function insertString(contentToInsert, isXML = false) {
+function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64") {
   const documentName = "COMP_" + Date.now();
   Word.run(async (context) => {
-    const contentRange = context.document.getSelection().getRange("Content");
+    const selection = context.document.getSelection();
+    const contentRange = selection.getRange("Content");
     const contentControl = contentRange.insertContentControl();
     contentControl.tag = TAGNAMES.component; // `COMPONENT#${loadDocument}#${timeStamp}`
     contentControl.title = documentName.toUpperCase();
@@ -57,7 +71,11 @@ function insertString(contentToInsert, isXML = false) {
     await context.sync();
     contentControl.appearance = "BoundingBox";
     contentControl.cannotEdit = false;
-    if (isXML) {
+    if (type === "data") {
+      contentControl.select();
+      await asyncFunctionWithCallback(Office.context.document.setSelectedDataAsync, [contentToInsert]);
+      await context.sync();
+    } else if (type === "xml") {
       contentControl.load("insertOoxml");
       await context.sync();
       contentControl.insertOoxml(contentToInsert, "Replace");
@@ -66,7 +84,7 @@ function insertString(contentToInsert, isXML = false) {
       await context.sync();
       contentControl.insertFileFromBase64(contentToInsert, "Replace");
     }
-    // await range.context.sync();
+    await contentControl.context.sync();
     await context.sync();
     // insert line break if there is no text before
     const rangeBefore = contentControl.getRange("Before");

@@ -6,7 +6,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import handleDocxClick from "@src/helpers/handleDocxClick";
 
-/* global OfficeExtension, document, Word, Office, module, require */
+/* global console, OfficeExtension, document, Word, Office, module, require */
 OfficeExtension.config.extendedErrorLogging = true;
 
 initializeIcons();
