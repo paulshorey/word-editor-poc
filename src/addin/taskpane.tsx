@@ -7,7 +7,7 @@ import * as ReactDOM from "react-dom";
 import handleDocxClick from "@src/helpers/handleDocxClick";
 
 /* global console, OfficeExtension, document, Word, Office, module, require */
-OfficeExtension.config.extendedErrorLogging = true;
+// OfficeExtension.config.extendedErrorLogging = true;
 
 initializeIcons();
 // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
@@ -35,9 +35,9 @@ Office.onReady(() => {
   isOfficeInitialized = true;
   render(App);
   if (isOfficeInitialized) {
-    Office.addin.setStartupBehavior(Office.StartupBehavior.load);
-    Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
-    Office.context.document.settings.saveAsync();
+    // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+    // Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+    // Office.context.document.settings.saveAsync();
     Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, handleDocxClick);
   }
 });

@@ -3,7 +3,7 @@
  * See LICENSE in the project root for license information.
  */
 
-/* global global, Office, self, window */
+/* global console, global, Office, self, window */
 
 console.log("COMMANDS . TS");
 
@@ -13,15 +13,18 @@ console.log("COMMANDS . TS");
 
 Office.onReady(() => {
   console.log("OFFICE . ON READY");
+  // $(window.document).ready(function () {
+  //   console.log("COMMANDS . TS -- office on ready, document ready");
+  // });
 });
-Office.initialize = () => {
-  console.log("OFFICE . INITIALIZE");
-};
+// Office.initialize = () => {
+//   console.log("OFFICE . INITIALIZE");
+// };
 
 /**
  * Shows a notification when the add-in command is executed.
  * @param event
- */ 1;
+ */
 function action(event: Office.AddinCommands.Event) {
   const message: Office.NotificationMessageDetails = {
     type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,

@@ -12,7 +12,7 @@ import dataElementsState, { dataElementsStateType } from "@src/state/dataElement
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
 
-/* global document, Office, Word, require */
+/* global window, document, Office, Word, require */
 
 export interface Props {
   title: string;
@@ -50,9 +50,8 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <hr />
       <ConditionalComponents />
       <hr />
-      <CustomComponent />
-      <hr />
 
+      <CustomComponent />
       <GetFirstParagraph />
       <AddContentControl />
       <ToggleCCDeletable />

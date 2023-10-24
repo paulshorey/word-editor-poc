@@ -1,7 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
-import { TAGNAMES } from "@src/constants/constants";
+import { TAGNAMES } from "@src/constants/contentControlProperties";
 import { dataElementType } from "@src/state/componentsState";
 
 /**

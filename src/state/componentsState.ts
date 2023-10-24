@@ -1,7 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
-/* global setTimeout, Office, document, Word, require */
+/* global setTimeout, console, Office, document, Word, require, window */
 import { create } from "zustand";
-import { TAGNAMES } from "@src/constants/constants";
+import { TAGNAMES } from "@src/constants/contentControlProperties";
 import { ComponentTestData } from "@src/testdata/TestData";
 import Don1 from "@src/testdata/Don1";
 
@@ -65,8 +65,8 @@ const componentsState = create((set, _get) => ({
   /**
    * Add a dataElement to the template, into the current cursor selection
    */
-  insertTag: function (documentName: string) {
-    return new Promise((resolve) => {
+  insertTag: function (documentName: string): void {
+    setTimeout(async () => {
       Word.run(async (context) => {
         // 0. Get base64 data content
         let base64DataContent;
@@ -87,66 +87,69 @@ const componentsState = create((set, _get) => ({
             Promise.reject("ERROR - Document does not exist");
             return;
         }
+        const title = formatTag(documentName);
+
         // 1. Insert into document
-        const contentRange = context.document.getSelection().getRange();
+        const contentRange = context.document.getSelection();
         const contentControl = contentRange.insertContentControl();
-        contentControl.set({
-          tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
-          title: documentName.toUpperCase(),
-        });
+        contentControl.title = title;
+        contentControl.tag = TAGNAMES.component;
+        contentControl.color = "#666666";
+        contentControl.cannotDelete = false;
+        contentControl.cannotEdit = false;
+        contentControl.appearance = "BoundingBox";
+        contentControl.insertText(title, "Replace");
+        // contentControl.cannotEdit = true;
         await context.sync();
-        contentControl.load("insertFileFromBase64");
+
+        // 2. Move cursor outside of the new contentControl
+        console.log(["insertHtml"]);
+        const rangeAfter = contentControl.getRange("After");
+        rangeAfter.load("insertHtml");
         await context.sync();
-        contentControl.insertFileFromBase64(base64DataContent, "Replace");
-        context
-          .sync()
-          .then((res) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> RES:", res);
-          })
-          .catch((error) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> Error", error);
-          });
+        rangeAfter.insertHtml(" <br /> ", "Start");
+        await context.sync();
+        rangeAfter.select("End");
+        console.log(["insertHtml done"]);
 
-        const TIMEOUT = 2000;
-        setTimeout(() => {
-          // eslint-disable-next-line no-undef
-          console.log("===> RESET page", TIMEOUT);
-          const body = context.document.body;
-          body.load();
-
-          context
-            .sync()
-            .then(() => {
-              // eslint-disable-next-line no-undef
-              console.log("===> RELOAD", TIMEOUT);
-            })
-            .catch((error) => {
-              // eslint-disable-next-line no-undef
-              console.log("===> Error Clear", error);
-            });
-        }, TIMEOUT);
-        // 2. Update state
-        // const dataElement: dataElementType = {
-        //   id: contentControl.id,
-        //   tag: contentControl.tag,
-        //   title: documentName.toUpperCase(),
-        // };
-        // const state = get() as componentsStateType;
-        // set({
-        //   items: [dataElement, ...state.items],
-        // });
+        // 3. Insert content preview (this does not work - maybe we can do this on the back-end)
+        // console.log(["insertFileFromBase64"]);
+        // contentControl.load("insertFileFromBase64");
         // await context.sync();
+        // contentControl.insertFileFromBase64(base64DataContent, "Replace");
+        // await context.sync();
+        // console.log(["insertFileFromBase64 done"]);
+
+        // 4. Update app state
         await this.loadAll();
-        resolve(true);
       });
-    });
+    }, 5);
+    setTimeout(async () => {
+      Word.run(async (context) => {
+        console.log(["context.document.body.load(); after 1000 ms"]);
+        context.document.body.load();
+        await context.sync();
+      });
+    }, 1000);
+    setTimeout(async () => {
+      Word.run(async (context) => {
+        console.log(["context.document.body.load(); after 5000 ms"]);
+        context.document.body.load();
+        await context.sync();
+      });
+    }, 5000);
+    setTimeout(async () => {
+      Word.run(async (context) => {
+        console.log(["context.document.body.load(); after 10000 ms"]);
+        context.document.body.load();
+        await context.sync();
+      });
+    }, 10000);
   },
 
   deleteId: function (id: id): Promise<dataElementType[]> {
     // eslint-disable-next-line no-undef
-    console.warn("dataElementsState.deleteTag()");
+    console.log(["dataElementsState.deleteTag()"]);
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Delete from document
@@ -164,7 +167,7 @@ const componentsState = create((set, _get) => ({
   },
 
   // deleteTags: function (tag: tag): Promise<dataElement[]> {
-  //   console.warn("dataElementsState.deleteTag()");
+  //   console.log(["dataElementsState.deleteTag()"]);
   //   return new Promise((resolve) => {
   //     Word.run(async (context) => {
   //       // 1. Delete from document
@@ -184,3 +187,21 @@ const componentsState = create((set, _get) => ({
 }));
 
 export default componentsState;
+
+// HELPERS LIBRARY:
+/**
+ * convert tag to uppercase, remove all spaces and special characters
+ */
+function formatTag(tag: tag): tag {
+  tag = tag
+    .toUpperCase()
+    .replace(/[^A-Z0-9_]/g, "_")
+    .replace(/[_]+/g, "_");
+  if (tag[0] === "_") {
+    tag = tag.slice(1);
+  }
+  if (tag[tag.length - 1] === "_") {
+    tag = tag.slice(0, -1);
+  }
+  return tag;
+}

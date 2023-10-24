@@ -14,7 +14,7 @@ const AddComponent = () => {
   // const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const [documentContent, set_documentContent] = useState("");
   return (
-    <Stack className="faf-fieldgroup">
+    <Stack className="faf-fieldgroup" style={{ margin: "0" }}>
       <textarea
         defaultValue=""
         onChange={(e) => {
@@ -57,7 +57,7 @@ const AddComponent = () => {
 
 export default AddComponent;
 
-import { TAGNAMES } from "@src/constants/constants";
+import { TAGNAMES } from "@src/constants/contentControlProperties";
 function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64") {
   const documentName = "COMP_" + Date.now();
   Word.run(async (context) => {

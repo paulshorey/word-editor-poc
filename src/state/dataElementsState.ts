@@ -1,6 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
+import { createDataElement } from "@src/constants/contentControlProperties";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -30,7 +31,7 @@ export type dataElementsStateType = {
   scrollToId: (id: id) => Promise<void>;
 };
 
-const dataElementsState = create((set, _get) => ({
+const dataElementsState = create((set, get) => ({
   /**
    * All dataElements used in the template
    */
@@ -39,26 +40,38 @@ const dataElementsState = create((set, _get) => ({
    * Add a dataElement to the template, into the current cursor selection
    */
   insertTag: function (tag: tag) {
-    tag = formatTag(tag);
-    console.warn("dataElementsState.selectTag()");
+    const state = get() as dataElementsStateType;
+    const cc = createDataElement(tag, state.items);
     return new Promise((resolve) => {
       // 1. Insert into document
       Word.run(async (context) => {
         const contentRange = context.document.getSelection();
         const contentControl = contentRange.insertContentControl();
-        contentControl.title = ":";
-        contentControl.tag = tag;
-        contentControl.color = "#666666";
-        contentControl.cannotDelete = true;
+        contentControl.title = cc.title;
+        contentControl.tag = cc.tagAndText;
+        contentControl.color = cc.color;
+        contentControl.cannotDelete = false;
         contentControl.cannotEdit = false;
-        contentControl.appearance = "Tags";
-        contentControl.insertText(tag, "Replace");
+        contentControl.appearance = cc.appearance;
+        contentControl.insertText(cc.tagAndText, "Replace");
         contentControl.cannotEdit = true;
-        context.sync().then(async () => {
-          // 2. Update state
-          const all = await this.loadAll();
-          resolve(all);
-        });
+        await context.sync();
+
+        // 2. Move cursor outside of the new contentControl
+        if (cc.htmlAfter) {
+          console.warn("insertHtml");
+          const rangeAfter = contentControl.getRange("After");
+          rangeAfter.load("insertHtml");
+          await context.sync();
+          rangeAfter.insertHtml(cc.htmlAfter, "Start");
+          await context.sync();
+          rangeAfter.select("End");
+          console.warn("insertHtml done");
+        }
+
+        // 3. Update app state
+        const all = await this.loadAll();
+        resolve(all);
       });
     });
   },

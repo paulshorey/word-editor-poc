@@ -1,6 +1,5 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, Word, require */
-import { TAGNAMES } from "@src/constants/constants";
 import { logClear } from "@src/lib/log";
 import * as wordDocument from "@src/state/wordDocument";
 import { selectAndHightlightItem } from "@src/state/wordDocument";
@@ -11,6 +10,7 @@ import { selectAndHightlightItem } from "@src/state/wordDocument";
  */
 export default function handleDocxClick() {
   return new Promise((resolve) => {
+    resolve(true);
     Word.run(async function (context) {
       logClear();
       // Get the current selection as a range.
@@ -22,51 +22,16 @@ export default function handleDocxClick() {
       const allComponents = context.document.contentControls;
       allComponents.load("items");
       await context.sync();
-      allComponents.items.forEach(async (item) => {
-        try {
-          item.load("id");
-          item.load("tag");
-          item.load("text");
-          item.load("title");
-          item.load("items");
-          await item.context.sync();
-          // await context.sync();
-          let itemRange = item.getRange("Content");
-          itemRange.load("intersectWithOrNullObject");
-          itemRange.load("items");
-          await itemRange.context.sync();
-          // await context.sync();
-          let intersection = itemRange.intersectWithOrNullObject(selection.getRange("Content"));
-          intersection.load("items");
-          intersection.load("isNullObject");
-          intersection.load();
-          await intersection.context.sync();
-          await context.sync();
-          console.log([item.tag, item.title, item.text, item.id]);
-          if (intersection.isNullObject) {
-            console.log(" ===> NO INTERSECTION");
-          } else {
-            console.log("===> INTERSECTS WITH: ", item.id, item.tag, item.title);
-            resolve(context.sync());
-            return;
-          }
-        } catch (e) {
-          console.log(" ===> ERROR", e);
-        }
-      });
-
       // State -- FOR CONSOLE LOG ONLY -- needs refactor/removed
       const state = {
         selectedParagraphs: [],
         selectedTags: [],
         clickedTag: "",
       };
-
       // log all paragraphs that the selection touches
       selectionRange.paragraphs.load("text");
       await selectionRange.paragraphs.context.sync();
       state.selectedParagraphs = selectionRange.paragraphs.items.map((p) => p.text);
-
       // log word under cursor
       const words = selectionRange.getTextRanges([" ", "\t", "\r", "\n"], true); // just get everything including punctuation until nearest whitespace
       words.load("items");
@@ -100,7 +65,6 @@ export default function handleDocxClick() {
           }
         }
       }
-
       if (state.selectedTags.length === 1) {
         state.clickedTag = state.selectedTags[0];
       }

@@ -1,6 +1,6 @@
 import React from "react";
 import { DefaultButton, Stack, TextField } from "@fluentui/react";
-import { TAGNAMES } from "@src/constants/constants";
+import { TAGNAMES } from "@src/constants/contentControlProperties";
 import { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 import conditionalComponentsState from "@src/state/conditionalComponentsState";
 

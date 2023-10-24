@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DefaultButton } from "@fluentui/react";
 
 import { contextLoad } from "@src/lib/commandUtils";
-import { TAGNAMES } from "@src/constants/constants";
+import { TAGNAMES } from "@src/constants/contentControlProperties";
 /* global Word, require */
 
 const handleClick = (tagName: string, isDeletable: boolean) => {
