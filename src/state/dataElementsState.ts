@@ -1,7 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
-import { createDataElement } from "@src/constants/contentControlProperties";
+import { createDataElement, TITLES } from "@src/constants/contentControlProperties";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -49,25 +49,37 @@ const dataElementsState = create((set, get) => ({
         const contentControl = contentRange.insertContentControl();
         contentControl.title = cc.title;
         contentControl.tag = cc.tagAndText;
-        contentControl.color = cc.color;
+        contentControl.color = "#666666";
         contentControl.cannotDelete = false;
         contentControl.cannotEdit = false;
-        contentControl.appearance = cc.appearance;
+        contentControl.appearance = "Tags";
         contentControl.insertText(cc.tagAndText, "Replace");
         contentControl.cannotEdit = true;
         await context.sync();
 
         // 2. Move cursor outside of the new contentControl
-        if (cc.htmlAfter) {
-          console.warn("insertHtml");
-          const rangeAfter = contentControl.getRange("After");
-          rangeAfter.load("insertHtml");
-          await context.sync();
-          rangeAfter.insertHtml(cc.htmlAfter, "Start");
-          await context.sync();
-          rangeAfter.select("End");
-          console.warn("insertHtml done");
-        }
+        // insert space after
+        // console.warn("insertAfter");
+        // const rangeAfter = contentControl.getRange("After");
+        // rangeAfter.load("insertAfter insertHtml");
+        // await context.sync();
+        // rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
+        // await context.sync();
+        // rangeAfter.select("End");
+        // console.warn("insertAfter done");
+        // insert space before
+        // console.warn("insertBefore");
+        // const rangeBefore = contentControl.getRange("Before");
+        // rangeBefore.load("text");
+        // await context.sync();
+        // console.log("text before ", rangeBefore.text);
+
+        // rangeBefore.load("insertBefore insertHtml");
+        // await context.sync();
+        // rangeBefore.insertHtml("&nbsp;", "End");
+        // await context.sync();
+        // rangeBefore.select("End");
+        // console.warn("insertBefore done");
 
         // 3. Update app state
         const all = await this.loadAll();
@@ -170,7 +182,7 @@ const dataElementsState = create((set, get) => ({
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Read document
-        const contentControls = context.document.contentControls.getByTitle(":");
+        const contentControls = context.document.contentControls.getByTitle(TITLES.dataElement);
         context.load(contentControls, "items");
         await context.sync();
         // 2. Update state

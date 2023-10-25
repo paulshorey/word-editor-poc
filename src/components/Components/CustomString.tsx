@@ -20,7 +20,7 @@ const AddComponent = () => {
         onChange={(e) => {
           set_documentContent(e.target.value);
         }}
-        placeholder="Insert string"
+        placeholder="Insert string with formatting"
       ></textarea>
       <Stack horizontal style={{ justifyContent: "space-between", margin: "0 15px 0 5px" }}>
         <DefaultButton
