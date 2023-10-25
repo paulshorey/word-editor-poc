@@ -49,16 +49,40 @@ const dataElementsState = create((set, _get) => ({
         contentControl.title = ":";
         contentControl.tag = tag;
         contentControl.color = "#666666";
-        contentControl.cannotDelete = true;
+        contentControl.cannotDelete = false;
         contentControl.cannotEdit = false;
         contentControl.appearance = "Tags";
         contentControl.insertText(tag, "Replace");
         contentControl.cannotEdit = true;
-        context.sync().then(async () => {
-          // 2. Update state
-          const all = await this.loadAll();
-          resolve(all);
-        });
+        await context.sync();
+
+        // 2. Move cursor outside of the new contentControl
+        // insert space after
+        console.warn("insertAfter");
+        const rangeAfter = contentControl.getRange("After");
+        rangeAfter.load("insertAfter insertHtml");
+        await context.sync();
+        rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
+        await context.sync();
+        rangeAfter.select("End");
+        console.warn("insertAfter done");
+        // insert space before
+        console.warn("insertBefore");
+        const rangeBefore = contentControl.getRange("Before");
+        rangeBefore.load("text");
+        await context.sync();
+        console.log("text before ", rangeBefore.text);
+
+        rangeBefore.load("insertBefore insertHtml");
+        await context.sync();
+        rangeBefore.insertHtml("&nbsp;", "End");
+        await context.sync();
+        rangeBefore.select("End");
+        console.warn("insertBefore done");
+
+        // 3. Update app state
+        const all = await this.loadAll();
+        resolve(all);
       });
     });
   },

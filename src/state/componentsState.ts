@@ -1,5 +1,5 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
-/* global setTimeout, Office, document, Word, require */
+/* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
 import { TAGNAMES } from "@src/constants/constants";
 import { ComponentTestData } from "@src/testdata/TestData";
@@ -127,19 +127,34 @@ const componentsState = create((set, _get) => ({
               console.log("===> Error Clear", error);
             });
         }, TIMEOUT);
-        // 2. Update state
-        // const dataElement: dataElementType = {
-        //   id: contentControl.id,
-        //   tag: contentControl.tag,
-        //   title: documentName.toUpperCase(),
-        // };
-        // const state = get() as componentsStateType;
-        // set({
-        //   items: [dataElement, ...state.items],
-        // });
-        // await context.sync();
-        await this.loadAll();
-        resolve(true);
+
+        // 2. Move cursor outside of the new contentControl
+        // insert space after
+        console.warn("insertAfter");
+        const rangeAfter = contentControl.getRange("After");
+        rangeAfter.load("insertAfter insertHtml");
+        await context.sync();
+        rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
+        await context.sync();
+        rangeAfter.select("End");
+        console.warn("insertAfter done");
+        // insert space before
+        console.warn("insertBefore");
+        const rangeBefore = contentControl.getRange("Before");
+        rangeBefore.load("text");
+        await context.sync();
+        console.log("text before ", rangeBefore.text);
+
+        rangeBefore.load("insertBefore insertHtml");
+        await context.sync();
+        rangeBefore.insertHtml("&nbsp;", "End");
+        await context.sync();
+        rangeBefore.select("End");
+        console.warn("insertBefore done");
+
+        // 3. Update app state
+        const all = await this.loadAll();
+        resolve(all);
       });
     });
   },

@@ -14,6 +14,7 @@ const AddDataElement = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             dataElements.insertTag(tag);
+            set_tag("");
           }
           if (e.key.length > 1) return;
         }}
@@ -27,6 +28,7 @@ const AddDataElement = () => {
         iconProps={{ iconName: "ChevronRight" }}
         onClick={() => {
           dataElements.insertTag(tag);
+          set_tag("");
         }}
       >
         Add
