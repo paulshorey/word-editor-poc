@@ -10,6 +10,7 @@ import Scroll2LastComponent from "@src/components/commands/Scroll2LastComponent"
 import dataElementsState, { dataElementsStateType } from "@src/state/dataElementsState";
 import conditionalComponentsState, { conditionalComponentsStateType } from "@src/state/conditionalComponentsState";
 import componentsState, { componentsStateType } from "@src/state/componentsState";
+import GetDon from "@src/components/commands/GetDon";
 
 /* global document, Office, Word, require */
 
@@ -50,6 +51,7 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <ConditionalComponents />
       <hr />
 
+      <GetDon />
       <GetFirstParagraph />
       <AddContentControl />
       <ToggleCCDeletable />

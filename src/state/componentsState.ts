@@ -54,6 +54,11 @@ const componentsState = create((set, _get) => ({
         const all = [];
         for (let item of contentControls.items) {
           all.push({ id: item.id, tag: item.tag, title: item.title });
+          item.track(); // This is important. If not specified, click will trigger everything
+          item.onEntered.add(async (event) => {
+            // eslint-disable-next-line no-undef
+            console.log("Hi7", event.ids, item.title);
+          });
         }
         set({ items: all });
         resolve(null);
