@@ -1,5 +1,5 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
-/* global setTimeout, console, Office, document, Word, require, window */
+/* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
 import { TAGNAMES } from "@src/constants/contentControlProperties";
 import { ComponentTestData } from "@src/testdata/TestData";
@@ -65,8 +65,8 @@ const componentsState = create((set, _get) => ({
   /**
    * Add a dataElement to the template, into the current cursor selection
    */
-  insertTag: function (documentName: string): void {
-    setTimeout(async () => {
+  insertTag: function (documentName: string) {
+    return new Promise((resolve) => {
       Word.run(async (context) => {
         // 0. Get base64 data content
         let base64DataContent;
@@ -87,69 +87,81 @@ const componentsState = create((set, _get) => ({
             Promise.reject("ERROR - Document does not exist");
             return;
         }
-        const title = formatTag(documentName);
-
         // 1. Insert into document
-        const contentRange = context.document.getSelection();
+        const contentRange = context.document.getSelection().getRange();
         const contentControl = contentRange.insertContentControl();
-        contentControl.title = title;
-        contentControl.tag = TAGNAMES.component;
-        contentControl.color = "#666666";
-        contentControl.cannotDelete = false;
-        contentControl.cannotEdit = false;
-        contentControl.appearance = "BoundingBox";
-        contentControl.insertText(title, "Replace");
-        // contentControl.cannotEdit = true;
+        contentControl.set({
+          tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
+          title: documentName.toUpperCase(),
+        });
         await context.sync();
+        contentControl.load("insertFileFromBase64");
+        await context.sync();
+        contentControl.insertFileFromBase64(base64DataContent, "Replace");
+        context
+          .sync()
+          .then((res) => {
+            // eslint-disable-next-line no-undef
+            console.log("===> RES:", res);
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-undef
+            console.log("===> Error", error);
+          });
+
+        const TIMEOUT = 2000;
+        setTimeout(() => {
+          // eslint-disable-next-line no-undef
+          console.log("===> RESET page", TIMEOUT);
+          const body = context.document.body;
+          body.load();
+
+          context
+            .sync()
+            .then(() => {
+              // eslint-disable-next-line no-undef
+              console.log("===> RELOAD", TIMEOUT);
+            })
+            .catch((error) => {
+              // eslint-disable-next-line no-undef
+              console.log("===> Error Clear", error);
+            });
+        }, TIMEOUT);
 
         // 2. Move cursor outside of the new contentControl
-        console.log(["insertHtml"]);
+        // insert space after
+        console.warn("insertAfter");
         const rangeAfter = contentControl.getRange("After");
-        rangeAfter.load("insertHtml");
+        rangeAfter.load("insertAfter insertHtml");
         await context.sync();
-        rangeAfter.insertHtml(" <br /> ", "Start");
+        rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
         await context.sync();
         rangeAfter.select("End");
-        console.log(["insertHtml done"]);
+        console.warn("insertAfter done");
+        // insert space before
+        console.warn("insertBefore");
+        const rangeBefore = contentControl.getRange("Before");
+        rangeBefore.load("text");
+        await context.sync();
+        console.log("text before ", rangeBefore.text);
 
-        // 3. Insert content preview (this does not work - maybe we can do this on the back-end)
-        // console.log(["insertFileFromBase64"]);
-        // contentControl.load("insertFileFromBase64");
-        // await context.sync();
-        // contentControl.insertFileFromBase64(base64DataContent, "Replace");
-        // await context.sync();
-        // console.log(["insertFileFromBase64 done"]);
+        rangeBefore.load("insertBefore insertHtml");
+        await context.sync();
+        rangeBefore.insertHtml("&nbsp;", "End");
+        await context.sync();
+        rangeBefore.select("End");
+        console.warn("insertBefore done");
 
-        // 4. Update app state
-        await this.loadAll();
+        // 3. Update app state
+        const all = await this.loadAll();
+        resolve(all);
       });
-    }, 5);
-    setTimeout(async () => {
-      Word.run(async (context) => {
-        console.log(["context.document.body.load(); after 1000 ms"]);
-        context.document.body.load();
-        await context.sync();
-      });
-    }, 1000);
-    setTimeout(async () => {
-      Word.run(async (context) => {
-        console.log(["context.document.body.load(); after 5000 ms"]);
-        context.document.body.load();
-        await context.sync();
-      });
-    }, 5000);
-    setTimeout(async () => {
-      Word.run(async (context) => {
-        console.log(["context.document.body.load(); after 10000 ms"]);
-        context.document.body.load();
-        await context.sync();
-      });
-    }, 10000);
+    });
   },
 
   deleteId: function (id: id): Promise<dataElementType[]> {
     // eslint-disable-next-line no-undef
-    console.log(["dataElementsState.deleteTag()"]);
+    console.warn("dataElementsState.deleteTag()");
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Delete from document
@@ -167,7 +179,7 @@ const componentsState = create((set, _get) => ({
   },
 
   // deleteTags: function (tag: tag): Promise<dataElement[]> {
-  //   console.log(["dataElementsState.deleteTag()"]);
+  //   console.warn("dataElementsState.deleteTag()");
   //   return new Promise((resolve) => {
   //     Word.run(async (context) => {
   //       // 1. Delete from document
@@ -187,21 +199,3 @@ const componentsState = create((set, _get) => ({
 }));
 
 export default componentsState;
-
-// HELPERS LIBRARY:
-/**
- * convert tag to uppercase, remove all spaces and special characters
- */
-function formatTag(tag: tag): tag {
-  tag = tag
-    .toUpperCase()
-    .replace(/[^A-Z0-9_]/g, "_")
-    .replace(/[_]+/g, "_");
-  if (tag[0] === "_") {
-    tag = tag.slice(1);
-  }
-  if (tag[tag.length - 1] === "_") {
-    tag = tag.slice(0, -1);
-  }
-  return tag;
-}

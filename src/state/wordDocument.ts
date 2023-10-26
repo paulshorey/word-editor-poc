@@ -39,6 +39,7 @@ export type wordDocumentType = {
  */
 export const setSelectedTag = (tag: tag): void => {
   state.update((state) => {
+    console.log("setSelectedTag", tag);
     state.selectedTag = tag;
   });
 };

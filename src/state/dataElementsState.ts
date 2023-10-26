@@ -1,7 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
-import { createDataElement, TITLES } from "@src/constants/contentControlProperties";
+import { createData, TITLES } from "@src/constants/contentControlProperties";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -40,46 +40,43 @@ const dataElementsState = create((set, get) => ({
    * Add a dataElement to the template, into the current cursor selection
    */
   insertTag: function (tag: tag) {
-    const state = get() as dataElementsStateType;
-    const cc = createDataElement(tag, state.items);
     return new Promise((resolve) => {
       // 1. Insert into document
       Word.run(async (context) => {
+        const cc = createData(tag, await this.loadAll());
         const contentRange = context.document.getSelection();
         const contentControl = contentRange.insertContentControl();
         contentControl.title = cc.title;
-        contentControl.tag = cc.tagAndText;
+        contentControl.tag = cc.tag;
         contentControl.color = "#666666";
         contentControl.cannotDelete = false;
         contentControl.cannotEdit = false;
         contentControl.appearance = "Tags";
-        contentControl.insertText(cc.tagAndText, "Replace");
+        contentControl.insertText(cc.tag, "Replace");
         contentControl.cannotEdit = true;
+        contentControl.onSelectionChanged.add(clickedCC);
         await context.sync();
 
         // 2. Move cursor outside of the new contentControl
         // insert space after
-        // console.warn("insertAfter");
-        // const rangeAfter = contentControl.getRange("After");
-        // rangeAfter.load("insertAfter insertHtml");
-        // await context.sync();
-        // rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
-        // await context.sync();
-        // rangeAfter.select("End");
-        // console.warn("insertAfter done");
+        const rangeAfter = contentControl.getRange("After");
+        rangeAfter.load("insertHtml");
+        rangeAfter.load("text");
+        await context.sync();
+        console.log("rangeAfter", rangeAfter.text);
+        await context.sync();
+        rangeAfter.insertHtml("&nbsp;", "Start");
+        await context.sync();
+        rangeAfter.select();
         // insert space before
-        // console.warn("insertBefore");
-        // const rangeBefore = contentControl.getRange("Before");
-        // rangeBefore.load("text");
-        // await context.sync();
-        // console.log("text before ", rangeBefore.text);
-
-        // rangeBefore.load("insertBefore insertHtml");
-        // await context.sync();
-        // rangeBefore.insertHtml("&nbsp;", "End");
-        // await context.sync();
-        // rangeBefore.select("End");
-        // console.warn("insertBefore done");
+        const rangeBefore = contentControl.getRange("Before");
+        rangeBefore.load("text");
+        await context.sync();
+        rangeBefore.load("insertHtml");
+        await context.sync();
+        rangeBefore.insertHtml("&nbsp;", "End");
+        await context.sync();
+        rangeBefore.select();
 
         // 3. Update app state
         const all = await this.loadAll();
@@ -179,15 +176,30 @@ const dataElementsState = create((set, get) => ({
 
   loadAll: function () {
     console.warn("dataElementsState.loadAll()");
+    const items = (get() as dataElementsStateType).items;
+    let ids = {};
+    for (let item of items) {
+      ids[item.id] = true;
+    }
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Read document
-        const contentControls = context.document.contentControls.getByTitle(TITLES.dataElement);
+        const contentControls = context.document.contentControls.getByTitle(TITLES.data);
         context.load(contentControls, "items");
         await context.sync();
         // 2. Update state
         const all = [];
         for (let item of contentControls.items) {
+          item.load("onSelectionChanged");
+          item.style = "RichTextInline";
+          await context.sync();
+          if (!ids[item.id]) {
+            console.log(["ADDING event on", item.text]);
+            // item.onSelectionChanged.remove(clicked);
+            // item.onSelectionChanged.add(clicked);
+          } else {
+            console.log(["NOT adding event on", item.text, item.onSelectionChanged]);
+          }
           all.push({ id: item.id, tag: item.tag });
         }
         set({ items: all });
@@ -198,6 +210,17 @@ const dataElementsState = create((set, get) => ({
 }));
 
 export default dataElementsState;
+
+async function clickedCC(target: any) {
+  console.warn("clicked", target);
+  let id = target.ids[0];
+  let lastId = target.ids.lastItem;
+  if (id === lastId) {
+    console.log("CLICKED", target.ids);
+  } else {
+    console.log("nOt cLiCkEd ?");
+  }
+}
 
 // HELPERS LIBRARY:
 /**
