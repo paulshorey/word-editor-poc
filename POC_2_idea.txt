@@ -1,0 +1,91 @@
+This is JUST a starting point for discussion - not how we necessarily want
+to move on. We might want to make a quick mockup in Figma - I rather not!!!
+
+Description of how to implement a PHRASE-EDITOR as a pure React Application
+
+- Create a new pure React project.
+    - Libraries to consider
+        - react-reorder or any other library that makes it easy to drag
+            elements in a list around
+        - React Query (tanstack) or just plain Axios
+        - React-Table / Material-ui-datatables / React-data-grid  :: For
+            the template search page
+        - React Router
+
+Application page
+    - Header has to include First American logo and other identifications
+    - Footer is plain simple
+    - Body is a tab page (routes) with 2 tabs (for now, more to be
+        added later on)
+
+    First Tab is a cheap version of Admin Workspace to allow picking a
+        Template to work on or to Create a new template
+    - The body has three parts:
+        - A simple search form that allows to specify Template Name,
+            Region, State, Keywords ...
+          The search parameters will in first instance be used to
+            filter the full data set from BE
+          Later on, might make sense to have BE do the filtering
+        - Search result as a list.
+            - Display a paginated result. User can choose between
+                10, 25 and 50 rows
+            - The data result is shown in a tabular for supported
+                by one of the suggested three libraries
+            - Each row has 3 actions is on the right side of the row.
+                View+Edit template,  Preview (we don't need that now)
+                    and Create Instance (will be implemented later)
+                Data to show are:
+                - Id
+                - Template name
+                - Create date
+                - Last update date
+                - Status
+                - ... ?
+        - Actions: Create new template. Modal form - Title, Region,
+                State(s), Underwriter.
+            When pressing "Create" in modal, a new empty Template
+                display in the "Template Phrase View+Editor" (see next)
+
+    Second Tab is the Phrase View/Editor page
+    - Body part
+        - Filter at the top -- not sure what to filter for, just thought
+            it might (or not) be a good ide?
+        - A list view of the Phrases for the template
+        - The list is display using "react-reorder" library
+            - Each element in the list has to show
+                Title of phrase, Id
+                Can expand to second line for details. Region it belongs
+                    to, State, Underwriter
+            - Each element in list has a left column to indicate status
+                    and to allow
+                adding conditions (to show on next n lines)
+            - Each element in list has a right column with action icons - Delete,
+                    AddAfter, AddBefore, View in editor
+                - Actions:
+                    - Delete will delete the phrase from template and the
+                        list is updated
+                    - AddAfter/Before will show a search form (to be detailed
+                            later). Now, just show all phrases from database or
+                            can pick from 3 standard elements:
+                                - PageBreak
+                                - SectionBreak
+                                - ComponentMarker (to indicate inclusion of forms
+                                    the client has filled out)
+                        - Selecting a phrase insert either After or before
+                            current phrase. List is updated.
+                    - View in Editor - takes the user to an editor view. To
+                        be defined later
+        - Save Template button. Saves to DB and stays in tab
+        - Save and return. Saves to DB and takes user back to Landing page
+        - Cancel Edit
+
+API Calls:
+    Look at Tony's swagger file
+    - GetAllTemplateNames (detail information like, title, region, state,
+        underwriter, product type, usage)
+    - GetTemplateById (returns the agreed to Template structure)
+    - GetAllPhrase (similar to GetAllTemplateNames)
+    - SaveTemplateById
+    - AddNewTemplate
+    - UpdateTemplate (?? to change status -- this can wait)
+
