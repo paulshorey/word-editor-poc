@@ -15,8 +15,8 @@ const ToggleDeletable = () => {
           controls.items.forEach((control) => {
             context.load(control);
             context.sync();
-            control.color = checked ? "red" : "#666666";
-            control.cannotDelete = checked;
+            control.color = !checked ? "red" : "#666666";
+            control.cannotDelete = !checked;
             control.cannotEdit = !checked;
           });
         })
