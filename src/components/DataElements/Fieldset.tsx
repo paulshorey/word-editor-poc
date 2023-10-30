@@ -2,18 +2,17 @@
 import React from "react";
 import { TextField, Stack, IconButton } from "@fluentui/react";
 import dataElementsState, { dataElementsStateType, dataElement } from "@src/state/dataElementsState";
-import * as wordDocument from "@src/state/wordDocument";
 
 type Props = {
   control: dataElement;
-  selectedTag: string;
+  isSelected: boolean;
 };
 
-const Fieldset = ({ control, selectedTag }: Props) => {
+const Fieldset = ({ control, isSelected: isSelected }: Props) => {
   const dataElements = dataElementsState((state) => state as dataElementsStateType);
   const [tag, set_tag] = React.useState(control.tag);
   let selectedStyles = {};
-  if (control.tag === selectedTag) {
+  if (isSelected) {
     selectedStyles = {
       background: "#90b4d1",
       borderRadius: "5px",
@@ -31,7 +30,10 @@ const Fieldset = ({ control, selectedTag }: Props) => {
     >
       <TextField
         onFocus={() => {
-          wordDocument.scrollToId(control.id);
+          dataElements.selectId(control.id);
+        }}
+        onBlur={() => {
+          dataElements.renameId(control.id, tag);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

@@ -93,6 +93,7 @@ const componentsState = create((set, _get) => ({
         contentControl.set({
           tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
           title: documentName.toUpperCase(),
+          appearance: "Hidden",
         });
         await context.sync();
         contentControl.load("insertFileFromBase64");

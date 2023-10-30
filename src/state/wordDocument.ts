@@ -91,7 +91,7 @@ export const selectAndHightlightItem = async (item: any, context: any): Promise<
   item.color = "#08E5FF";
   setTimeout(async () => {
     await context.sync();
-    item.color = "white";
+    item.color = "#666666";
     context.sync();
   }, 1000);
 };

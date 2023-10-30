@@ -3,7 +3,9 @@ import Components from "@src/components/Components";
 import ConditionalComponents from "@src/components/ConditionalComponents";
 import GetFirstParagraph from "@src/components/commands/GetFirstParagraph";
 import AddContentControl from "@src/components/commands/AddContentControl";
-import ToggleCCDeletable from "@src/components/commands/ToggleCCDeletable";
+import ToggleAllDeletable from "@src/components/commands/ToggleAllDeletable";
+import ToggleAllHidden from "@src/components/commands/ToggleAllHidden";
+import ToggleAllEditable from "@src/components/commands/ToggleAllEditable";
 import DataElements from "@src/components/DataElements";
 import CustomComponent from "@src/components/Components/CustomString";
 import PrepareCC4Save from "@src/components/commands/DeleteFirstComponent";
@@ -46,6 +48,10 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <hr />
       <DataElements />
       <hr />
+      <ToggleAllDeletable />
+      <ToggleAllEditable />
+      <ToggleAllHidden />
+      <hr />
       <Components />
       <hr />
       <ConditionalComponents />
@@ -54,7 +60,6 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
       <CustomComponent />
       <GetFirstParagraph />
       <AddContentControl />
-      <ToggleCCDeletable />
       <PrepareCC4Save />
       <Scroll2LastComponent />
     </div>

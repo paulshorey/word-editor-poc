@@ -12,12 +12,12 @@
  */
 
 export const TITLES = {
-  number: "NUMBER",
-  text: "TEXT",
-  data: "DATA",
-  component: "COMPONENT",
-  conditional: "CONDITIONAL",
-  scenario: "SCENARIO",
+  number: "NUMBER: ",
+  text: "TEXT: ",
+  data: "DATA: ",
+  component: "COMPONENT: ",
+  conditional: "CONDITIONAL: ",
+  scenario: "SCENARIO: ",
 };
 
 export const createData = function (variableName: string, items: any[]) {

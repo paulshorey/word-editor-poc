@@ -2,11 +2,14 @@
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
 import { createData, TITLES } from "@src/constants/contentControlProperties";
+import { selectAndHightlightItem } from "@src/state/wordDocument";
+// import * as wordDocument from "@src/state/wordDocument";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
  */
 export type id = number;
+
 /**
  * contentControl.tag; context.document.contentControls.getByTag(tag);
  */
@@ -19,6 +22,9 @@ export type dataElement = {
 
 export type dataElementsStateType = {
   items: dataElement[];
+  selectedId: id;
+  itemIdsTracked: Record<string, boolean>;
+  //
   loadAll: () => Promise<Record<id, dataElement>>;
   insertTag: (tag: tag) => dataElement | undefined;
   //
@@ -29,6 +35,7 @@ export type dataElementsStateType = {
   deleteTags: (tag: tag) => Promise<dataElement[]>;
   //
   scrollToId: (id: id) => Promise<void>;
+  selectId: (id: id) => Promise<void>;
 };
 
 const dataElementsState = create((set, get) => ({
@@ -36,6 +43,7 @@ const dataElementsState = create((set, get) => ({
    * All dataElements used in the template
    */
   items: [],
+  itemIdsTracked: {},
   /**
    * Add a dataElement to the template, into the current cursor selection
    */
@@ -54,10 +62,22 @@ const dataElementsState = create((set, get) => ({
         contentControl.appearance = "Tags";
         contentControl.insertText(cc.tag, "Replace");
         contentControl.cannotEdit = true;
-        contentControl.onSelectionChanged.add(clickedCC);
+        contentControl.styleBuiltIn = "Strong";
         await context.sync();
+        contentControl.cannotEdit = true;
 
         // 2. Move cursor outside of the new contentControl
+        // insert space before
+        const rangeBefore = contentControl.getRange("Before");
+        rangeBefore.load(["text", "html", "getHtml"]);
+        await context.sync();
+        console.log(`text`, rangeBefore.text);
+        await context.sync();
+        rangeBefore.load("insertHtml");
+        await context.sync();
+        rangeBefore.insertHtml("&nbsp;", "Start");
+        await context.sync();
+        // rangeBefore.select();
         // insert space after
         const rangeAfter = contentControl.getRange("After");
         rangeAfter.load("insertHtml");
@@ -65,18 +85,9 @@ const dataElementsState = create((set, get) => ({
         await context.sync();
         console.log("rangeAfter", rangeAfter.text);
         await context.sync();
-        rangeAfter.insertHtml("&nbsp;", "Start");
+        const afterAdded = rangeAfter.insertHtml("&nbsp;", "End");
         await context.sync();
-        rangeAfter.select();
-        // insert space before
-        const rangeBefore = contentControl.getRange("Before");
-        rangeBefore.load("text");
-        await context.sync();
-        rangeBefore.load("insertHtml");
-        await context.sync();
-        rangeBefore.insertHtml("&nbsp;", "End");
-        await context.sync();
-        rangeBefore.select();
+        afterAdded.select();
 
         // 3. Update app state
         const all = await this.loadAll();
@@ -120,14 +131,12 @@ const dataElementsState = create((set, get) => ({
         context.load(contentControls, "items");
         await context.sync();
         for (let item of contentControls.items) {
-          await context.sync();
           item.cannotEdit = false;
           item.tag = tagRenamed;
           item.insertText(tagRenamed, "Replace");
           item.cannotEdit = true;
           await context.sync();
         }
-        await context.sync();
         // 2. Update state
         const all = await this.loadAll();
         resolve(all);
@@ -174,13 +183,16 @@ const dataElementsState = create((set, get) => ({
     });
   },
 
+  /**
+   * IMPORTANT! WARNING! It's OK for production, but good to know...
+   * During development, "hot reloading", this runs again and again.
+   * Each time, itemIdsTracked is reset to empty.
+   * So, `item.onEntered` is added multiple times per content control.
+   */
   loadAll: function () {
     console.warn("dataElementsState.loadAll()");
-    const items = (get() as dataElementsStateType).items;
-    let ids = {};
-    for (let item of items) {
-      ids[item.id] = true;
-    }
+    const itemIdsTracked = (get() as dataElementsStateType).itemIdsTracked || {};
+    const itemIdsTrackedAdd = {};
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Read document
@@ -190,37 +202,45 @@ const dataElementsState = create((set, get) => ({
         // 2. Update state
         const all = [];
         for (let item of contentControls.items) {
-          item.load("onSelectionChanged");
-          item.style = "RichTextInline";
+          item.load("onEntered");
           await context.sync();
-          if (!ids[item.id]) {
-            console.log(["ADDING event on", item.text]);
-            // item.onSelectionChanged.remove(clicked);
-            // item.onSelectionChanged.add(clicked);
+          if (!itemIdsTracked[item.id]) {
+            console.log(["tracking click event", item.text, item.id]);
+            item.track();
+            item.color = "#666666";
+            item.onEntered.add(this.selectId);
+            itemIdsTrackedAdd[item.id] = true;
           } else {
-            console.log(["NOT adding event on", item.text, item.onSelectionChanged]);
+            console.log(["already tracked", item.text, item.id]);
           }
           all.push({ id: item.id, tag: item.tag });
         }
-        set({ items: all });
+        set({ items: all, itemIdsTracked: { ...itemIdsTracked, ...itemIdsTrackedAdd } });
         resolve(all);
       });
+    });
+  },
+  selectId: async function (target: any) {
+    Word.run(async (context) => {
+      console.warn("clicked", target);
+      if (!target.ids) {
+        console.error("no ids", target);
+      }
+      let id = target.ids[0];
+      let item = context.document.contentControls.getById(id);
+      item.load("id");
+      await context.sync();
+      item.load("text");
+      await context.sync();
+      console.log(item.text);
+      set({ selectedId: id });
+      await selectAndHightlightItem(item, context);
+      await context.sync();
     });
   },
 }));
 
 export default dataElementsState;
-
-async function clickedCC(target: any) {
-  console.warn("clicked", target);
-  let id = target.ids[0];
-  let lastId = target.ids.lastItem;
-  if (id === lastId) {
-    console.log("CLICKED", target.ids);
-  } else {
-    console.log("nOt cLiCkEd ?");
-  }
-}
 
 // HELPERS LIBRARY:
 /**
