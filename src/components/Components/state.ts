@@ -1,9 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
-import { TAGNAMES } from "@src/constants/contentControlProperties";
-import { ComponentTestData } from "@src/testdata/TestData";
-import Don1 from "@src/testdata/Don1";
+import { ComponentTestData } from "@src/components/Components/testData";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)
@@ -14,41 +12,33 @@ export type id = number;
  */
 export type tag = string;
 
-type outputOption = {
-  id: string;
-  title: string;
-  condition: string;
-};
-
-export type dataElementType = {
+export type componentType = {
   tag: tag;
   id: id;
   title?: string;
-  outputOptions?: outputOption[];
 };
 
 export type componentsStateType = {
-  items: dataElementType[];
-  loadAll: () => Promise<Record<id, dataElementType>>;
-  insertTag: (documentName: string) => dataElementType | undefined;
-  //
-  deleteId: (id: id) => Promise<dataElementType[]>;
-  // deleteTags: (tag: tag) => Promise<dataElement[]>;
-  //
-  scrollToId: (id: id) => Promise<void>;
+  items: componentType[];
+  loadAll: () => Promise<Record<id, componentType>>;
+  add: (documentName: string) => componentType | undefined;
+  delete: (id: id) => Promise<componentType[]>;
 };
 
 const componentsState = create((set, _get) => ({
   /**
-   * All dataElements used in the template
+   * All components used in the template
    */
   items: [],
 
+  /**
+   * Sync with Word API to make a list of all components in the Word document
+   */
   loadAll: function () {
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Read document
-        const contentControls = context.document.contentControls.getByTag(TAGNAMES.component);
+        const contentControls = context.document.contentControls.getByTag("COMPONENT");
         context.load(contentControls, "items");
         await context.sync();
         // 2. Update state
@@ -63,9 +53,9 @@ const componentsState = create((set, _get) => ({
   },
 
   /**
-   * Add a dataElement to the template, into the current cursor selection
+   * Add a component to the template, into the current cursor selection
    */
-  insertTag: function (documentName: string) {
+  add: function (documentName: string) {
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 0. Get base64 data content
@@ -79,10 +69,6 @@ const componentsState = create((set, _get) => ({
             base64DataContent = ComponentTestData.comp_simple_word.data;
             break;
 
-          case "don1":
-            base64DataContent = Don1;
-            break;
-
           default:
             Promise.reject("ERROR - Document does not exist");
             return;
@@ -91,7 +77,7 @@ const componentsState = create((set, _get) => ({
         const contentRange = context.document.getSelection().getRange();
         const contentControl = contentRange.insertContentControl();
         contentControl.set({
-          tag: TAGNAMES.component, // `COMPONENT#${loadDocument}#${timeStamp}`
+          tag: "COMPONENT",
           title: documentName.toUpperCase(),
           appearance: "Hidden",
         });
@@ -99,59 +85,37 @@ const componentsState = create((set, _get) => ({
         contentControl.load("insertFileFromBase64");
         await context.sync();
         contentControl.insertFileFromBase64(base64DataContent, "Replace");
-        context
-          .sync()
-          .then((res) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> RES:", res);
-          })
-          .catch((error) => {
-            // eslint-disable-next-line no-undef
-            console.log("===> Error", error);
-          });
-
-        const TIMEOUT = 2000;
+        await context.sync();
+        //
         setTimeout(() => {
-          // eslint-disable-next-line no-undef
-          console.log("===> RESET page", TIMEOUT);
-          const body = context.document.body;
-          body.load();
-
-          context
-            .sync()
-            .then(() => {
-              // eslint-disable-next-line no-undef
-              console.log("===> RELOAD", TIMEOUT);
-            })
-            .catch((error) => {
-              // eslint-disable-next-line no-undef
-              console.log("===> Error Clear", error);
-            });
-        }, TIMEOUT);
+          console.log("context.document.load() after 2000 ms");
+          context.document.load();
+          return context.sync();
+        }, 2000);
 
         // 2. Move cursor outside of the new contentControl
         // insert space after
-        console.warn("insertAfter");
+        console.warn("insertHtml After");
         const rangeAfter = contentControl.getRange("After");
-        rangeAfter.load("insertAfter insertHtml");
+        rangeAfter.load(["insertHtml", "html"]);
         await context.sync();
         rangeAfter.insertHtml("&nbsp;<br />&nbsp;", "Start");
         await context.sync();
         rangeAfter.select("End");
-        console.warn("insertAfter done");
+        console.warn("insertHtml After done");
         // insert space before
-        console.warn("insertBefore");
+        console.warn("insertText Before");
         const rangeBefore = contentControl.getRange("Before");
         rangeBefore.load("text");
         await context.sync();
-        console.log("text before ", rangeBefore.text);
-
-        rangeBefore.load("insertBefore insertHtml");
+        console.log("insertText Before done", rangeBefore.text);
+        //
+        rangeBefore.load("insertHtml Before");
         await context.sync();
         rangeBefore.insertHtml("&nbsp;", "End");
         await context.sync();
         rangeBefore.select("End");
-        console.warn("insertBefore done");
+        console.warn("insertHtml Before done");
 
         // 3. Update app state
         const all = await this.loadAll();
@@ -160,9 +124,12 @@ const componentsState = create((set, _get) => ({
     });
   },
 
-  deleteId: function (id: id): Promise<dataElementType[]> {
+  /**
+   * Delete one component by ID
+   */
+  delete: function (id: id): Promise<componentType[]> {
     // eslint-disable-next-line no-undef
-    console.warn("dataElementsState.deleteTag()");
+    console.warn("componentsState.deleteTag()");
     return new Promise((resolve) => {
       Word.run(async (context) => {
         // 1. Delete from document
@@ -178,25 +145,6 @@ const componentsState = create((set, _get) => ({
       });
     });
   },
-
-  // deleteTags: function (tag: tag): Promise<dataElement[]> {
-  //   console.warn("dataElementsState.deleteTag()");
-  //   return new Promise((resolve) => {
-  //     Word.run(async (context) => {
-  //       // 1. Delete from document
-  //       const contentControls = context.document.contentControls.getByTag(tag);
-  //       context.load(contentControls, "items");
-  //       await context.sync();
-  //       for (let item of contentControls.items) {
-  //         item.delete(false);
-  //       }
-  //       await context.sync();
-  //       // 2. Update state
-  //       const all = await this.loadAll();
-  //       resolve(all);
-  //     });
-  //   });
-  // },
 }));
 
 export default componentsState;

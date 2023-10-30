@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DefaultButton, Stack } from "@fluentui/react";
-import componentsState, { componentsStateType } from "@src/state/componentsState";
+import componentsState, { componentsStateType } from "@src/components/Components/state";
 
 /* global console, Word, require */
 
@@ -23,7 +23,7 @@ const AddComponent = () => {
       <DefaultButton
         className="faf-fieldgroup-button"
         iconProps={{ iconName: "ChevronRight" }}
-        onClick={() => components.insertTag(loadDocument)}
+        onClick={() => components.add(loadDocument)}
       >
         Add
       </DefaultButton>

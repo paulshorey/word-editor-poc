@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DefaultButton, Stack, TextField } from "@fluentui/react";
+import { DefaultButton, Stack } from "@fluentui/react";
 // import componentsState, { componentsStateType } from "@src/state/componentsState";
 
 const asyncFunctionWithCallback = function (func, args) {
@@ -10,61 +10,69 @@ const asyncFunctionWithCallback = function (func, args) {
 
 /* global Office, console, Word, require */
 
-const AddComponent = () => {
+const Experimental = () => {
   // const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const [documentContent, set_documentContent] = useState("");
   return (
-    <Stack className="faf-fieldgroup" style={{ margin: "0" }}>
-      <textarea
-        defaultValue=""
-        onChange={(e) => {
-          set_documentContent(e.target.value);
-        }}
-        placeholder="Insert string with formatting"
-      ></textarea>
-      <Stack horizontal style={{ justifyContent: "space-between", margin: "0 15px 0 5px" }}>
-        <DefaultButton
-          className="faf-fieldgroup-button"
-          style={{ whiteSpace: "nowrap", border: "none" }}
-          onClick={() => {
-            insertString(documentContent, "xml");
-          }}
-        >
-          XML
-        </DefaultButton>
-        <DefaultButton
-          className="faf-fieldgroup-button"
-          style={{ whiteSpace: "nowrap", border: "none" }}
-          onClick={() => {
-            insertString(documentContent, "base64");
-          }}
-        >
-          Base64
-        </DefaultButton>
-        <DefaultButton
-          className="faf-fieldgroup-button"
-          style={{ whiteSpace: "nowrap", border: "none" }}
-          onClick={() => {
-            insertString(documentContent, "data");
-          }}
-        >
-          dataAsync
-        </DefaultButton>
+    <div style={{ margin: "0 5px 10px" }}>
+      <Stack
+        horizontal
+        style={{ justifyContent: "space-between", alignItems: "center", margin: "0 0 10px", padding: "0" }}
+      >
+        <h3 style={{ margin: "0", padding: "0" }}>Components:</h3>
+        {/* <button onClick={components?.loadAll}>re-sync</button> */}
       </Stack>
-    </Stack>
+      <Stack className="faf-fieldgroup" style={{ margin: "0" }}>
+        <textarea
+          defaultValue=""
+          onChange={(e) => {
+            set_documentContent(e.target.value);
+          }}
+          placeholder="Insert string with formatting"
+        ></textarea>
+        <Stack horizontal style={{ justifyContent: "space-between", margin: "0 15px 0 5px" }}>
+          <DefaultButton
+            className="faf-fieldgroup-button"
+            style={{ whiteSpace: "nowrap", border: "none" }}
+            onClick={() => {
+              insertString(documentContent, "xml");
+            }}
+          >
+            XML
+          </DefaultButton>
+          <DefaultButton
+            className="faf-fieldgroup-button"
+            style={{ whiteSpace: "nowrap", border: "none" }}
+            onClick={() => {
+              insertString(documentContent, "base64");
+            }}
+          >
+            Base64
+          </DefaultButton>
+          <DefaultButton
+            className="faf-fieldgroup-button"
+            style={{ whiteSpace: "nowrap", border: "none" }}
+            onClick={() => {
+              insertString(documentContent, "data");
+            }}
+          >
+            dataAsync
+          </DefaultButton>
+        </Stack>
+      </Stack>
+    </div>
   );
 };
 
-export default AddComponent;
+export default Experimental;
 
-import { TAGNAMES } from "@src/constants/contentControlProperties";
 function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64") {
   const documentName = "COMP_" + Date.now();
   Word.run(async (context) => {
     const selection = context.document.getSelection();
     const contentRange = selection.getRange("Content");
     const contentControl = contentRange.insertContentControl();
-    contentControl.tag = TAGNAMES.component; // `COMPONENT#${loadDocument}#${timeStamp}`
+    contentControl.tag = "COMPONENT";
     contentControl.title = documentName.toUpperCase();
     contentControl.insertHtml("<div>Loading component content...</div>", "Start");
     contentControl.load("cannotEdit");
