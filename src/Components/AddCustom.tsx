@@ -1,35 +1,27 @@
 import React, { useState } from "react";
 import { DefaultButton, Stack } from "@fluentui/react";
-import componentsState, { componentsStateType } from "@src/Components/state";
-
-const asyncFunctionWithCallback = function (func, args) {
-  return new Promise((resolve, reject) => {
-    func.apply(null, [...args, (err, result) => (err ? reject(err) : resolve(result))]);
-  });
-};
 
 /* global Office, console, Word, require */
 
 /**
- * This uses the insertString() below to insert a content control into the document,
+ * This uses the add() helper function below to insert a content control into the document,
  * then insert formatted content into the new content control, as base64, XML, or text.
  */
 const AddCustom = () => {
-  const components: componentsStateType = componentsState((state) => state as componentsStateType);
-  const [documentContent, set_documentContent] = useState("");
+  const [string, set_string] = useState("");
   return (
     <div style={{ margin: "0 5px 10px" }}>
       <Stack
         horizontal
         style={{ justifyContent: "space-between", alignItems: "center", margin: "0 0 10px", padding: "0" }}
       >
-        <h3 style={{ margin: "0", padding: "0" }}>Components:</h3>
+        <h3 style={{ margin: "0", padding: "0" }}>Add custom string:</h3>
       </Stack>
       <Stack className="faf-fieldgroup" style={{ margin: "0" }}>
         <textarea
           defaultValue=""
           onChange={(e) => {
-            set_documentContent(e.target.value);
+            set_string(e.target.value);
           }}
           placeholder="Insert string with formatting"
         ></textarea>
@@ -38,8 +30,7 @@ const AddCustom = () => {
             className="faf-fieldgroup-button"
             style={{ whiteSpace: "nowrap", border: "none" }}
             onClick={async () => {
-              await insertString(documentContent, "xml");
-              components?.loadAll();
+              await add(string, "xml");
             }}
           >
             XML
@@ -48,7 +39,7 @@ const AddCustom = () => {
             className="faf-fieldgroup-button"
             style={{ whiteSpace: "nowrap", border: "none" }}
             onClick={() => {
-              insertString(documentContent, "base64");
+              add(string, "base64");
             }}
           >
             Base64
@@ -57,7 +48,7 @@ const AddCustom = () => {
             className="faf-fieldgroup-button"
             style={{ whiteSpace: "nowrap", border: "none" }}
             onClick={() => {
-              insertString(documentContent, "data");
+              add(string, "data");
             }}
           >
             dataAsync
@@ -70,7 +61,7 @@ const AddCustom = () => {
 
 export default AddCustom;
 
-function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64") {
+function add(contentToInsert, type: "base64" | "xml" | "data" = "base64") {
   return new Promise((resolve, reject) => {
     const documentName = "COMP_" + Date.now();
     Word.run(async (context) => {
@@ -80,7 +71,7 @@ function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64
         const contentControl = contentRange.insertContentControl();
         contentControl.tag = "COMPONENT";
         contentControl.title = documentName.toUpperCase();
-        contentControl.insertHtml("<div>Loading component content...</div>", "Start");
+        contentControl.insertHtml("<div>Adding custom content...</div>", "Start");
         contentControl.load("cannotEdit");
         await context.sync();
         contentControl.appearance = "BoundingBox";
@@ -126,5 +117,11 @@ function insertString(contentToInsert, type: "base64" | "xml" | "data" = "base64
         reject(error);
       }
     });
+  });
+}
+
+function asyncFunctionWithCallback(func, args) {
+  return new Promise((resolve, reject) => {
+    func.apply(null, [...args, (err, result) => (err ? reject(err) : resolve(result))]);
   });
 }

@@ -1,6 +1,6 @@
 import React from "react";
-import Components from "@src/Components";
-import CustomComponent from "@src/Components/AddCustom";
+import AddComponent from "@src/components/AddComponent";
+import AddCustom from "@src/components/AddCustom";
 
 /* global window, document, Office, Word, require */
 
@@ -22,9 +22,9 @@ export default function Taskpane({ title, isOfficeInitialized }: Props) {
   return (
     <div className="faf-taskpane">
       <hr />
-      <Components />
+      <AddComponent />
       <hr />
-      <CustomComponent />
+      <AddCustom />
     </div>
   );
 }
