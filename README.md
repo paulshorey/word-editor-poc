@@ -14,13 +14,13 @@ The editor freezes, shows a "Waiting..." or "Inserting...", but the dialog never
 
 Loading the same OneDrive/SharePoint document in a different tab or even a different computer will show the inserted content correctly - and even triggers the original "frozen" Microsoft Word editor tab to get unstuck and start working correctly again.
 
-## To reproduce the issue,
+## Run the Word add-in:
 
 - Open MS Word online (Sharepoint or OneDrive)
 
-- Click the "add-ins" button in the toolbar
+- Click the "add-ins" button in the top toolbar
 
-- Upload our manifest (specially hosted just for this debugging experiment): https://base64-word-editor-poc.paulshorey.com/manifest.xml
+- Upload the add-in manifest (specially hosted just for this debugging experiment): https://base64-word-editor-poc-debug.paulshorey.com/manifest.xml
 
 - Click the "FIRST AMERICAN" add-in button in the toolbar
 
@@ -33,6 +33,16 @@ Loading the same OneDrive/SharePoint document in a different tab or even a diffe
 - (3) Click "Add"
 
 - Alternatively, enter your own "base64" or "OOXML" string into the text area below the select UI, then click the correct text-button below the text area.
+
+## Debug/engineer add-in:
+
+- `npm install` (or `yarn`)
+
+- `npm run start` (or `yarn start`)
+
+- open `https://localhost:3000` in a browser. Click anywhere in the page. Type "thisisunsafe"
+
+- then follow the "Run the Word add-in" instructions above, but with the ROOT `manifest.xml` file instead of the one hosted on the server
 
 ## Debugging:
 
