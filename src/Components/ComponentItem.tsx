@@ -1,7 +1,7 @@
 /* global console */
 import React from "react";
 import { Stack, IconButton } from "@fluentui/react";
-import componentsState, { componentType, componentsStateType } from "@src/components/Components/state";
+import componentsState, { componentType, componentsStateType } from "@src/Components/state";
 
 type Props = {
   control: componentType;

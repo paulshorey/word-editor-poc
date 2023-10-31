@@ -1,7 +1,7 @@
 /* eslint-disable office-addins/no-context-sync-in-loop */
 /* global console, setTimeout, Office, document, Word, require */
 import { create } from "zustand";
-import { ComponentTestData } from "@src/components/Components/testData";
+import { ComponentTestData } from "@src/Components/testData";
 
 /**
  * contentControl.id; context.document.contentControls.getById(id)

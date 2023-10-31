@@ -1,4 +1,4 @@
-import App from "@src/components/Taskpane";
+import App from "@src/Taskpane";
 import { AppContainer } from "react-hot-loader";
 import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
@@ -38,8 +38,8 @@ Office.onReady(() => {
 });
 
 if ((module as any).hot) {
-  (module as any).hot.accept("@src/components/Taskpane", () => {
-    const NextApp = require("@src/components/Taskpane").default;
+  (module as any).hot.accept("@src/Taskpane", () => {
+    const NextApp = require("@src/Taskpane").default;
     render(NextApp);
   });
 }

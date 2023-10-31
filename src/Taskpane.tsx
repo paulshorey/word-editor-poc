@@ -1,6 +1,6 @@
 import React from "react";
-import Components from "@src/components/Components";
-import CustomComponent from "@src/components/CustomString";
+import Components from "@src/Components";
+import CustomComponent from "@src/Components/AddCustom";
 
 /* global window, document, Office, Word, require */
 

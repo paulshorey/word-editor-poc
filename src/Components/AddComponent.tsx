@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { DefaultButton, Stack } from "@fluentui/react";
-import componentsState, { componentsStateType } from "@src/components/Components/state";
+import componentsState, { componentsStateType } from "@src/Components/state";
 
 /* global console, Word, require */
 
+/**
+ * Inserts a content control, then inserts formatted content into the new content control,
+ * as base64, from a couple pre-defined strings.
+ */
 const AddComponent = () => {
   const components: componentsStateType = componentsState((state) => state as componentsStateType);
   const [loadDocument, set_loadDocument] = useState("NO_PICK");
@@ -13,12 +17,12 @@ const AddComponent = () => {
       <select
         className="faf-fieldgroup-input"
         style={{ height: "32px" }}
-        onChange={(value) => set_loadDocument(value.target.value)}
+        onChange={(value) => set_loadDocument(value.target.value + Math.round(Math.random() * 1000))}
       >
-        <option value="NO_PICK">Pick a Document</option>
+        <option value="NO_PICK">Pick a Document:</option>
         <option value="comp_simple_word">Simple text</option>
         <option value="comp_with_table">With table</option>
-        <option value="don1">Don{"'"}s template</option>
+        {/* <option value="don1">Don{"'"}s template</option> */}
       </select>
       <DefaultButton
         className="faf-fieldgroup-button"

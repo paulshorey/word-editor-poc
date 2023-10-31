@@ -1,5 +1,5 @@
 import React from "react";
-import ComponentFieldset from "./ComponentItem";
+import Component from "./ComponentItem";
 import AddComponent from "./AddComponent";
 import { Stack } from "@fluentui/react";
 import componentsState, { componentsStateType } from "./state";
@@ -18,9 +18,9 @@ const ViewComponents = () => {
       </Stack>
       <AddComponent />
       {(components.items.length > 0 &&
-        components.items.map((control) => <ComponentFieldset key={control.id} control={control} />)) || (
+        components.items.map((control) => <Component key={control.id} control={control} />)) || (
         <div>
-          None. <code onClick={components?.loadAll}>Click to reload.</code>
+          None. <button onClick={components?.loadAll}>re-sync</button>
         </div>
       )}
     </div>
