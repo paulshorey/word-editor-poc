@@ -8,6 +8,8 @@ It does not work reliably. Calling the `.insertFileFromBase64` function breaks t
 
 The editor freezes, shows a "Waiting..." or "Inserting...", but the dialog never goes away until the page is refreshed.
 
+<img width="1270" alt="image" src="https://github.com/paulshorey/word-editor-poc/assets/7524065/6e31df33-21ef-4995-8430-22ff51befaa2">
+
 ## STRANGE THING IS... THIS IS A CLUE...
 
 Loading the same OneDrive/SharePoint document in a different tab or even a different computer will show the inserted content correctly - and even triggers the original "frozen" Microsoft Word editor tab to get unstuck and start working correctly again.
