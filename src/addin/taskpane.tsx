@@ -4,7 +4,6 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import handleDocxClick from "@src/helpers/handleDocxClick";
 
 /* global setTimeout, console, OfficeExtension, document, Word, Office, module, require */
 // OfficeExtension.config.extendedErrorLogging = true;
@@ -37,8 +36,6 @@ Office.onReady(() => {
   isOfficeInitialized = true;
   render(App);
   if (isOfficeInitialized) {
-    // listen for click event
-    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, handleDocxClick);
     // setTimeout(() => {
     //   // auto-open the taskpane
     //   Office.addin.setStartupBehavior(Office.StartupBehavior.load);
