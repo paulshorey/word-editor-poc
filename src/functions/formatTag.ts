@@ -8,9 +8,9 @@ export default function formatTag(variableName: string, items: any[]) {
       sameVariableName++;
     }
   }
-  // if (sameVariableName) {
-  number = sameVariableName + 1 + "";
-  // }
+  if (sameVariableName) {
+    number = (sameVariableName + 1).toString();
+  }
   return [tag + (number ? ":" + number : ""), tag, number];
 }
 

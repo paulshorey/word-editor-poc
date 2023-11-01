@@ -12,7 +12,7 @@ const AddDataElement = () => {
 
   const handleInsertData = (tag, text) => {
     console.log(["handleInsertData", tag, text]);
-    controls.insertTag("Data", tag, text);
+    controls.insertTag("DATA", tag, text);
     // set_text("");
     set_loading(true);
     setTimeout(() => {

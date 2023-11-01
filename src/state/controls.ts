@@ -5,7 +5,7 @@ import formatTag from "@src/functions/formatTag";
 import selectAndHightlightItem from "@src/functions/selectAndHightlightControl";
 import resetControl from "@src/functions/resetControl";
 
-const labels = { Data: true, Text: true, Number: true };
+const labels = { DATA: true, TEXT: true, NUMBER: true };
 export type label = keyof typeof labels;
 export type id = number;
 export type tag = string;
@@ -59,7 +59,7 @@ const controlsState = create((set, get) => {
      * All controls used in the template
      */
     items: [],
-    label: "Data",
+    label: "DATA",
     itemIdsTracked: {},
   } as controlsStateType;
   /**
@@ -110,8 +110,8 @@ const controlsState = create((set, get) => {
     return new Promise((resolve) => {
       // 1. Insert into document
       Word.run(async (context) => {
-        // const [tagName] = formatTag(tag, that.items);
-        const tagName = tag;
+        const [tagName] = formatTag(tag, that.items);
+        // const tagName = tag;
         console.log(["insertTag", tagName, title]);
         // parent
         const contentRange = context.document.getSelection();

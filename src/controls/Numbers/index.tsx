@@ -18,7 +18,7 @@ const ViewDataElements = () => {
       </Stack>
       <AddNew />
       {controls.items
-        ?.filter((control) => control.title === "Number")
+        ?.filter((control) => control.title === "NUMBER")
         .map((control) => (
           <Item key={control.id} control={control} isSelected={control.id === controls.selectedId} />
         ))}

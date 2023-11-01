@@ -10,7 +10,7 @@ const AddDataElement = () => {
   const [loading, set_loading] = React.useState(false);
   const handleInsertNumber = (value: string) => {
     // controls.setLabel("Number");
-    controls.insertTag("Number", "Number", value);
+    controls.insertTag("NUMBER", "Number", value);
     set_number("");
     set_loading(true);
     setTimeout(() => {

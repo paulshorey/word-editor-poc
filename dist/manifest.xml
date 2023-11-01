@@ -25,10 +25,14 @@
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Action xsi:type="ShowTaskpane">
+      <TaskpaneId>Office.AutoShowTaskpaneWithDocument</TaskpaneId>
+      <SourceLocation resid="TemplateEditorPOC" />
+    </Action>
     <Hosts>
       <Host xsi:type="Document">
         <Runtimes>
-          <Runtime resid="Taskpane.Url" lifetime="long" />
+          <Runtime resid="TemplateEditorPOC" lifetime="long" />
         </Runtimes>
         <DesktopFormFactor>
           <GetStarted>
@@ -59,11 +63,7 @@
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <TaskpaneId>ButtonId1</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url"/>
-                  </Action>
-                  <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>Office.AutoShowTaskpaneWithDocument</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url" />
+                    <SourceLocation resid="TemplateEditorPOC"/>
                   </Action>
                 </Control>
               </Group>
@@ -81,7 +81,7 @@
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
         <bt:Url id="Commands.Url" DefaultValue="https://word-editor-poc.vercel.app/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://word-editor-poc.vercel.app/taskpane.html"/>
+        <bt:Url id="TemplateEditorPOC" DefaultValue="https://word-editor-poc.vercel.app/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
