@@ -4,17 +4,14 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { ThemeProvider } from "@fluentui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import handleDocxClick from "@src/helpers/handleDocxClick";
 
-/* global OfficeExtension, document, Word, Office, module, require */
-OfficeExtension.config.extendedErrorLogging = true;
+/* global setTimeout, console, OfficeExtension, document, Word, Office, module, require */
 
+// OfficeExtension.config.extendedErrorLogging = true;
 initializeIcons();
-// Office.addin.setStartupBehavior(Office.StartupBehavior.load);
-// Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
-// Office.context.document.settings.saveAsync();
-
-console.log("TASKPANE . TSX");
+// console.log("Office.addin.showAsTaskpane() attempt 1");
+// Office.addin.showAsTaskpane();
+// console.log("TASKPANE . TSX");
 
 let isOfficeInitialized = false;
 
@@ -31,14 +28,26 @@ const render = (Component) => {
   );
 };
 
-Office.onReady(() => {
+Office.onReady(async () => {
+  // console.log("Office.addin.showAsTaskpane() attempt 2");
+  // await Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+  // console.log("Office.ribbon.requestUpdate attempt");
+  // await Office.ribbon.requestUpdate({});
+  // let addinState = await Office.addin.getStartupBehavior();
+  // auto-open the taskpane
+  // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+  // Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+  // Office.context.document.settings.saveAsync();
+  // load the app
   isOfficeInitialized = true;
   render(App);
   if (isOfficeInitialized) {
-    Office.addin.setStartupBehavior(Office.StartupBehavior.load);
-    Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
-    Office.context.document.settings.saveAsync();
-    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, handleDocxClick);
+    // setTimeout(() => {
+    //   // auto-open the taskpane
+    //   Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+    //   Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
+    //   Office.context.document.settings.saveAsync();
+    // }, 3000);
   }
 });
 

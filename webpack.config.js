@@ -7,7 +7,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://word-editor-poc.vercel.app/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = "https://base64-word-editor-poc.paulshorey.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -87,13 +87,13 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "taskpane.html",
         template: "./public/taskpane.html",
-        chunks: ["taskpane", "vendor", "polyfills"],
+        chunks: ["commands", "taskpane", "vendor", "polyfills"],
       }),
-      new HtmlWebpackPlugin({
-        filename: "commands.html",
-        template: "./public/commands.html",
-        chunks: ["commands", "polyfills"],
-      }),
+      // new HtmlWebpackPlugin({
+      //   filename: "commands.html",
+      //   template: "./public/commands.html",
+      //   chunks: ["commands", "polyfills"],
+      // }),
       new webpack.ProvidePlugin({
         Promise: ["es6-promise", "Promise"],
       }),

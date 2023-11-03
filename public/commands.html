@@ -5,14 +5,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
     <!-- Office JavaScript API -->
-    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js"></script>
   </head>
 
   <body></body>
 
   <script>
     console.log("COMMANDS . HTML");
+    Office.initialize = function (reason) {
+      $(document).ready(function () {
+        console.log("COMMANDS . HTML -- office initialize, document ready");
+      });
+    };
   </script>
 </html>

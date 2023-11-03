@@ -1,6 +1,6 @@
 /* global console, setTimeout, Office, document, Word, require */
 import { createState } from "@persevie/statemanjs";
-import { id } from "@src/state/dataElementsState";
+import { id } from "@src/state/dataElements";
 
 export type tag = string;
 

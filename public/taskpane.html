@@ -10,7 +10,7 @@
     <title>First American Template Editor</title>
 
     <!-- Office JavaScript API -->
-    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/beta/hosted/office.js"></script>
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link
@@ -24,10 +24,12 @@
 
   <body class="faf-bg">
     <div id="container"></div>
-    <div id="message"></div>
   </body>
 
   <script>
-    console.log("TASKPANE . HTML");
+    console.log("TASKPANE . HTML", window.top[0][4]);
+    window.locationReload = function () {
+      window.top[0][4].location.reload();
+    };
   </script>
 </html>
