@@ -9,6 +9,8 @@ import * as ReactDOM from "react-dom";
 // OfficeExtension.config.extendedErrorLogging = true;
 
 initializeIcons();
+console.log("Office.addin.showAsTaskpane() attempt 1");
+Office.addin.showAsTaskpane();
 
 console.log("TASKPANE . TSX");
 
@@ -27,7 +29,12 @@ const render = (Component) => {
   );
 };
 
-Office.onReady(() => {
+Office.onReady(async () => {
+  console.log("Office.addin.showAsTaskpane() attempt 2");
+  await Office.addin.setStartupBehavior(Office.StartupBehavior.load);
+  // console.log("Office.ribbon.requestUpdate attempt");
+  // await Office.ribbon.requestUpdate({});
+  // let addinState = await Office.addin.getStartupBehavior();
   // // auto-open the taskpane
   // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
   // Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
