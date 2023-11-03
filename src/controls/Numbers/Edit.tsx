@@ -1,7 +1,7 @@
 /* global console, setTimeout */
 import React, { useEffect } from "react";
 import { TextField, Stack, IconButton } from "@fluentui/react";
-import controlsState, { controlsStateType, control } from "@src/state/controls";
+import controlsState, { controlsStateType, control } from "@src/state/dataElements";
 
 type Props = {
   control: control;

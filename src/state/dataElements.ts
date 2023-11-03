@@ -316,7 +316,7 @@ const controlsState = create((set, get) => {
       that.selectId(id);
     }
   };
-  state.selectId = function (id: id) {
+  state.selectId = function (id: id): Promise<void> {
     console.log("controls.selectId", id);
     setTimeout(() => {
       set({ selectedId: 0 });
@@ -331,7 +331,7 @@ const controlsState = create((set, get) => {
         console.log(item.text);
         await selectAndHightlightItem(item, context);
         await context.sync();
-        resolve(true);
+        resolve();
       });
     });
   };

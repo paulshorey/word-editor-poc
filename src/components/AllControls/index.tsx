@@ -6,11 +6,7 @@ import ToggleAllHidden from "@src/components/AllControls/ToggleAppearanceHidden"
 import ToggleAllTags from "@src/components/AllControls/ToggleAppearanceTags";
 import ToggleAllBox from "@src/components/AllControls/ToggleAppearanceBox";
 import ToggleAllEditable from "@src/components/AllControls/ToggleEditable";
-import PrepareCC4Save from "@src/components/AllControls/DeleteFirstComponent";
-import Scroll2LastComponent from "@src/components/AllControls/Scroll2LastComponent";
 import { Stack } from "@fluentui/react";
-import controlsState from "@src/state/controls";
-import { controlsStateType } from "@src/state/controls";
 
 /* global window, document, Office, Word, require */
 
@@ -20,7 +16,6 @@ export interface Props {
 }
 
 export default function AllControls() {
-  const controls = controlsState((state) => state as controlsStateType);
   return (
     <div>
       <Stack
@@ -29,13 +24,13 @@ export default function AllControls() {
       >
         <h3 style={{ margin: "0", padding: "0" }}>All controls:</h3>
       </Stack>
-      <button onClick={controls.loadAll}>sync</button>
-      <hr />
       <ToggleAllDeletable />
       <ToggleAllEditable />
       <ToggleAllHidden />
       <ToggleAllTags />
       <ToggleAllBox />
+      <p>&nbsp;</p>
+      <hr />
       {/* <hr />
       <GetFirstParagraph />
       <AddContentControl />

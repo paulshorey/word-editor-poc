@@ -5,14 +5,14 @@
 
 /* global console, global, Office, self, window */
 
-console.log("COMMANDS . TS");
+// console.log("COMMANDS . TS");
 
 // Office.addin.setStartupBehavior(Office.StartupBehavior.load);
 // Office.context.document.settings.set("Office.AutoShowTaskpaneWithDocument", true);
 // Office.context.document.settings.saveAsync();
 
 Office.onReady(() => {
-  console.log("OFFICE . ON READY");
+  // console.log("OFFICE . ON READY");
   // $(window.document).ready(function () {
   //   console.log("COMMANDS . TS -- office on ready, document ready");
   // });

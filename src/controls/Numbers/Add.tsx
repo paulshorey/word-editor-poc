@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { DefaultButton, TextField, Stack } from "@fluentui/react";
-import controlsState, { controlsStateType } from "@src/state/controls";
+import controlsState, { controlsStateType } from "@src/state/dataElements";
 
 /* global setTimeout, Word, require */
 

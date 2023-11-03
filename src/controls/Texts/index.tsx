@@ -1,6 +1,6 @@
 /* global console */
 import React from "react";
-import controlsState, { controlsStateType } from "@src/state/controls";
+import controlsState, { controlsStateType } from "@src/state/dataElements";
 import Item from "./Edit";
 import AddNew from "./Add";
 import { Stack } from "@fluentui/react";
