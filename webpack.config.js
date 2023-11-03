@@ -7,7 +7,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://word-editor-poc.vercel.app/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = "https://base64-word-editor-poc.paulshorey.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
