@@ -15,7 +15,7 @@ After adding a new component (assuming it works and the UI updates correctly)...
 # Instructions (how to make this work in Microsoft Word Online):
 
 1. Open any Word document in Sharepoint or Onedrive. Anything. Create a new one. Can be your personal, or corporate, whatever.
-2. Save this manifest.xml file to your computer: https://base64-word-editor-poc.paulshorey.com/manifest.xml
+2. Save this manifest.xml file to your computer: https://word-editor-poc.vercel.app/manifest.xml
 3. See screenshot. Upload this manifest file to MS Word to install the Add-in. Find the "Add-ins" button in MS Word's toolbar. Then find the option to "Upload My Add-in".
 4. Click the "TEMPLATE EDITOR" button in the top toolbar.
    ![image](https://github.com/paulshorey/word-editor-poc/assets/7524065/44eadb91-c688-4e34-a572-3a2821ca5fc2)
