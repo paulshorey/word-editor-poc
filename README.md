@@ -6,6 +6,7 @@ Manually convert Word file to base64 string, then paste into our add-in app text
 https://products.aspose.app/pdf/conversion/docx-to-base64
 
 # Known issues (front-end bugfixes needed):
+
 After adding a new component (assuming it works and the UI updates correctly)...
 
 1. Need to click "reload" button in the app to update React state list of components in the document (need to fix this to work automatically in the code after the ./src/state/components.js insertTag function)
@@ -17,7 +18,7 @@ After adding a new component (assuming it works and the UI updates correctly)...
 2. Save this manifest.xml file to your computer: https://base64-word-editor-poc.paulshorey.com/manifest.xml
 3. See screenshot. Upload this manifest file to MS Word to install the Add-in. Find the "Add-ins" button in MS Word's toolbar. Then find the option to "Upload My Add-in".
 4. Click the "TEMPLATE EDITOR" button in the top toolbar.
-![image](https://github.com/paulshorey/word-editor-poc/assets/7524065/44eadb91-c688-4e34-a572-3a2821ca5fc2)
+   ![image](https://github.com/paulshorey/word-editor-poc/assets/7524065/44eadb91-c688-4e34-a572-3a2821ca5fc2)
 
 # Concerns and problems:
 
@@ -29,3 +30,16 @@ EXCEPT the two issues we've been talking about, which are back-end/dev-ops issue
 2. Customizing the MS Word toolbar (disable file save-as, and share functionality)
 
 These issues are NOT front-end. They require back-end / dev-ops / hosting research and development.
+
+# Developing the front-end:
+
+This uses Webpack/EsLint/TypeScript/React, your typical web app. No Next JS. The framework is "Microsoft Office JS" which runs this in a sandbox environment, limited, unable to interact with the rest of Microsoft's app, except for some API that it exposes to us, like "Word" or "Document".
+
+Documentation:
+
+- https://learn.microsoft.com/en-us/office/dev/add-ins/overview/office-add-ins
+- https://learn.microsoft.com/en-us/office/dev/add-ins/design/interface-elements
+- https://learn.microsoft.com/en-us/office/dev/add-ins/develop/develop-overview#create-an-office-add-in
+- https://learn.microsoft.com/en-us/javascript/api/word?view=word-js-preview
+
+But also, TypeScript. If you have good TypeScript tooling (VsCode helps a lot), then you'll be able to "Cmd + Click" on any of the exposed Microsoft methods/properties, and see the definition, and definitions of siblings. It is important to do this in addition to reading the web docs.
