@@ -127,11 +127,17 @@ const componentsState = create((set, _get) => ({
             });
         }, TIMEOUT);
 
-        // 3. Update app state
-        await this.loadAll();
-        resolve();
-
         // 2. Move cursor outside of the new contentControl
+        // insert space after
+        const rangeAfter = contentControl.getRange("After");
+        rangeAfter.load("insertHtml");
+        rangeAfter.load("text");
+        await context.sync();
+        console.log("rangeAfter", rangeAfter.text);
+        await context.sync();
+        const afterAdded = rangeAfter.insertHtml("&nbsp;", "End");
+        await context.sync();
+        afterAdded.select();
         // insert space before
         const rangeBefore = contentControl.getRange("Before");
         rangeBefore.load(["text", "html", "getHtml"]);
@@ -143,17 +149,15 @@ const componentsState = create((set, _get) => ({
         rangeBefore.insertHtml("&nbsp;", "Start");
         await context.sync();
         rangeBefore.select();
-        // insert space after
-        const rangeAfter = contentControl.getRange("After");
-        rangeAfter.load("insertHtml");
-        rangeAfter.load("text");
-        await context.sync();
-        console.log("rangeAfter", rangeAfter.text);
-        await context.sync();
-        const afterAdded = rangeAfter.insertHtml("&nbsp;", "End");
-        await context.sync();
-        afterAdded.select();
+
+        // 3. Update app state
+        await this.loadAll();
+        resolve();
       });
+      setTimeout(() => {
+        this.loadAll();
+        resolve();
+      }, 5000);
     });
   },
 

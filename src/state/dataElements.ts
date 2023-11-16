@@ -344,42 +344,50 @@ const controlsState = create((set, get) => {
    */
   state.loadAll = function () {
     const that = get() as controlsStateType;
-    console.warn("controlsState.loadAll()");
-    const itemIdsTracked = that.itemIdsTracked || {};
+    console.warn("controlsState.loadAll()", that);
+    const itemIdsTracked = that?.itemIdsTracked || {};
+    console.warn("After itemIdsTracked", itemIdsTracked);
     const itemIdsTrackedAdd = {};
+    console.warn("Before promise", itemIdsTrackedAdd);
     return new Promise((resolve) => {
-      Word.run(async (context) => {
-        // 1. Read document
-        const contentControls = context.document.contentControls;
-        context.load(contentControls, "items");
-        await context.sync();
-        // 2. Update state
-        const all = [];
-        for (let item of contentControls.items) {
-          item.load(["tag", "title", "onEntered"]);
+      console.warn("Inside promise");
+      try {
+        Word.run(async (context) => {
+          // 1. Read document
+          const contentControls = context.document.contentControls;
+          context.load(contentControls, "items");
           await context.sync();
-          if (item.tag === ":" || !labels[item.title]) {
-            continue;
-          }
+          // 2. Update state
+          const all = [];
+          for (let item of contentControls.items) {
+            item.load(["tag", "title", "onEntered"]);
+            await context.sync();
+            if (item.tag === ":" || !labels[item.title]) {
+              continue;
+            }
 
-          console.log("Loaded", item.title, item.tag, item.id, item.text);
-          all.push({ id: item.id, tag: item.tag, title: item.title, value: item.text });
+            console.log("Loaded", item.title, item.tag, item.id, item.text);
+            all.push({ id: item.id, tag: item.tag, title: item.title, value: item.text });
 
-          if (!that.itemIdsTracked[item.id]) {
-            resetControl(item);
-            // console.log(["track item", item.text, item.id]);
-            item.track();
-            item.onEntered.add(that.clickTarget);
-            item.onSelectionChanged.add(that.selectTarget);
-            itemIdsTrackedAdd[item.id] = true;
-            context.load(item);
-          } else {
-            // console.log(["already tracked", item.text, item.id]);
+            if (!that.itemIdsTracked[item.id]) {
+              resetControl(item);
+              // console.log(["track item", item.text, item.id]);
+              item.track();
+              item.onEntered.add(that.clickTarget);
+              item.onSelectionChanged.add(that.selectTarget);
+              itemIdsTrackedAdd[item.id] = true;
+              context.load(item);
+            } else {
+              // console.log(["already tracked", item.text, item.id]);
+            }
           }
-        }
-        set({ items: all, itemIdsTracked: { ...itemIdsTracked, ...itemIdsTrackedAdd } });
-        resolve(all);
-      });
+          set({ items: all, itemIdsTracked: { ...itemIdsTracked, ...itemIdsTrackedAdd } });
+          resolve(all);
+        });
+      } catch (e) {
+        console.error(e);
+        resolve(null);
+      }
     });
   };
   return state;
