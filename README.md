@@ -18,8 +18,6 @@ After adding a new component (assuming it works and the UI updates correctly)...
 3. See screenshot. Upload this manifest file to MS Word to install the Add-in. Find the "Add-ins" button in MS Word's toolbar. Then find the option to "Upload My Add-in".
 4. Click the "TEMPLATE EDITOR" button in the top toolbar.
 ![image](https://github.com/paulshorey/word-editor-poc/assets/7524065/44eadb91-c688-4e34-a572-3a2821ca5fc2)
-![image](https://github.com/paulshorey/word-editor-poc/assets/7524065/4dc30833-2a24-4003-bede-c48b6cd7d302)
-
 
 ## Concerns and problems:
 
