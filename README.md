@@ -5,7 +5,7 @@
 Manually convert Word file to base64 string, then paste into our add-in app text area:
 https://products.aspose.app/pdf/conversion/docx-to-base64
 
-## Known issues (front-end):
+## TO DO (front-end):
 After adding a new component (assuming it works and the UI updates correctly)...
 
 1. Need to click "reload" button in the app to update React state list of components in the document (need to fix this to work automatically in the code after the ./src/state/components.js insertTag function)
